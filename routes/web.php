@@ -121,7 +121,10 @@ Route::get('/fix-storage', function () {
 
 Route::get('/run-migration', function () {
     try {
-        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'Database\Seeders\ContentMigrationSeeder']);
+        // Força a inclusão do arquivo para evitar erro de classe não encontrada no servidor remoto
+        require_once base_path('database/seeders/ContentMigrationSeeder.php');
+        $seeder = new \Database\Seeders\ContentMigrationSeeder();
+        $seeder->run();
         return "Migração do conteúdo antigo criada com sucesso! Você já pode fechar esta página e testar o menu.";
     } catch (\Exception $e) {
         return "Erro ao rodar migração: " . $e->getMessage();
