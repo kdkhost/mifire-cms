@@ -102,8 +102,10 @@
             <div class="flex items-center gap-3">
                 @foreach($socialLinks as $social)
                     <a href="{{ $social->url }}" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors" title="{{ $social->platform }}">
-                        @if($social->icon)
-                            <img src="{{ asset('storage/' . $social->icon) }}" alt="{{ $social->platform }}" class="w-4 h-4 opacity-70 hover:opacity-100 transition-opacity" loading="lazy">
+                        @if($social->icon && (Str::contains($social->icon, '.') || Str::startsWith($social->icon, 'http')))
+                            <img src="{{ Str::startsWith($social->icon, 'http') ? $social->icon : asset('storage/' . $social->icon) }}" alt="{{ $social->platform }}" class="w-4 h-4 opacity-70 hover:opacity-100 transition-opacity" loading="lazy">
+                        @elseif($social->icon)
+                            <i class="{{ $social->icon }} w-4 h-4 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity"></i>
                         @else
                             @switch(strtolower($social->platform))
                                 @case('facebook')
@@ -303,8 +305,10 @@
                             <a href="{{ $social->url }}" target="_blank" rel="noopener noreferrer"
                                class="w-9 h-9 bg-gray-800 hover:bg-red-600 rounded-lg flex items-center justify-center transition-all duration-200 group"
                                title="{{ $social->platform }}">
-                                @if($social->icon)
-                                    <img src="{{ asset('storage/' . $social->icon) }}" alt="{{ $social->platform }}" class="w-4 h-4 opacity-70 group-hover:opacity-100" loading="lazy">
+                                @if($social->icon && (Str::contains($social->icon, '.') || Str::startsWith($social->icon, 'http')))
+                                    <img src="{{ Str::startsWith($social->icon, 'http') ? $social->icon : asset('storage/' . $social->icon) }}" alt="{{ $social->platform }}" class="w-4 h-4 opacity-70 group-hover:opacity-100" loading="lazy">
+                                @elseif($social->icon)
+                                    <i class="{{ $social->icon }} w-4 h-4 flex items-center justify-center opacity-70 group-hover:opacity-100"></i>
                                 @else
                                     @switch(strtolower($social->platform))
                                         @case('facebook')
