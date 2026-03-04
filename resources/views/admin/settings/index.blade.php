@@ -1,0 +1,279 @@
+@extends('admin.layout')
+
+@section('title', 'Configurações')
+
+@section('content')
+<div x-data="settingsPage()">
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">Configurações</h1>
+        <p class="text-sm text-gray-500 mt-1">Gerencie as configurações gerais do site</p>
+    </div>
+
+    {{-- Tabs --}}
+    <div class="border-b border-gray-200 mb-6">
+        <nav class="flex gap-1 -mb-px overflow-x-auto">
+            <button @click="tab = 'geral'" :class="tab === 'geral' ? 'border-red-500 text-red-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
+                    class="px-4 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors">Geral</button>
+            <button @click="tab = 'contato'" :class="tab === 'contato' ? 'border-red-500 text-red-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
+                    class="px-4 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors">Contato</button>
+            <button @click="tab = 'seo'" :class="tab === 'seo' ? 'border-red-500 text-red-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
+                    class="px-4 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors">SEO</button>
+            <button @click="tab = 'pwa'" :class="tab === 'pwa' ? 'border-red-500 text-red-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
+                    class="px-4 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors">PWA</button>
+            <button @click="tab = 'email'" :class="tab === 'email' ? 'border-red-500 text-red-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
+                    class="px-4 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors">E-mail</button>
+            <button @click="tab = 'avancado'" :class="tab === 'avancado' ? 'border-red-500 text-red-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
+                    class="px-4 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors">Avançado</button>
+        </nav>
+    </div>
+
+    <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        <div class="max-w-3xl">
+            {{-- GERAL --}}
+            <div x-show="tab === 'geral'" class="space-y-6">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
+                    <h3 class="text-lg font-semibold text-gray-900 pb-3 border-b border-gray-100">Informações do Site</h3>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nome do Site</label>
+                        <input type="text" name="settings[site_name]" value="{{ old('settings.site_name', $settings['site_name'] ?? '') }}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Slogan</label>
+                        <input type="text" name="settings[site_tagline]" value="{{ old('settings.site_tagline', $settings['site_tagline'] ?? '') }}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Logo</label>
+                        <input type="file" name="site_logo" accept="image/*"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-sm file:bg-red-50 file:text-red-600 hover:file:bg-red-100">
+                        @if(!empty($settings['site_logo']))
+                            <div class="mt-2">
+                                <img src="{{ asset('storage/' . $settings['site_logo']) }}" alt="Logo" class="h-10 object-contain">
+                            </div>
+                        @endif
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Favicon</label>
+                        <input type="file" name="site_favicon" accept="image/x-icon,image/png"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-sm file:bg-red-50 file:text-red-600 hover:file:bg-red-100">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Copyright</label>
+                        <input type="text" name="settings[copyright]" value="{{ old('settings.copyright', $settings['copyright'] ?? '') }}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                               placeholder="© 2025 MIFIRE. Todos os direitos reservados.">
+                    </div>
+                </div>
+            </div>
+
+            {{-- CONTATO --}}
+            <div x-show="tab === 'contato'" class="space-y-6">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
+                    <h3 class="text-lg font-semibold text-gray-900 pb-3 border-b border-gray-100">Dados de Contato</h3>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">E-mail Principal</label>
+                        <input type="email" name="settings[contact_email]" value="{{ old('settings.contact_email', $settings['contact_email'] ?? '') }}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Telefone</label>
+                        <input type="text" name="settings[contact_phone]" value="{{ old('settings.contact_phone', $settings['contact_phone'] ?? '') }}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                               placeholder="(00) 0000-0000">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">WhatsApp</label>
+                        <input type="text" name="settings[contact_whatsapp]" value="{{ old('settings.contact_whatsapp', $settings['contact_whatsapp'] ?? '') }}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                               placeholder="5511999999999">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Google Maps (URL ou Embed)</label>
+                        <textarea name="settings[google_maps]" rows="3"
+                                  class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500">{{ old('settings.google_maps', $settings['google_maps'] ?? '') }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            {{-- SEO --}}
+            <div x-show="tab === 'seo'" class="space-y-6">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
+                    <h3 class="text-lg font-semibold text-gray-900 pb-3 border-b border-gray-100">SEO</h3>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Meta Título (padrão)</label>
+                        <input type="text" name="settings[meta_title]" value="{{ old('settings.meta_title', $settings['meta_title'] ?? '') }}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Meta Descrição (padrão)</label>
+                        <textarea name="settings[meta_description]" rows="3"
+                                  class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500">{{ old('settings.meta_description', $settings['meta_description'] ?? '') }}</textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Meta Keywords (padrão)</label>
+                        <input type="text" name="settings[meta_keywords]" value="{{ old('settings.meta_keywords', $settings['meta_keywords'] ?? '') }}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                               placeholder="palavra1, palavra2, palavra3">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Google Analytics ID</label>
+                        <input type="text" name="settings[google_analytics_id]" value="{{ old('settings.google_analytics_id', $settings['google_analytics_id'] ?? '') }}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                               placeholder="G-XXXXXXXXXX">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Google Tag Manager ID</label>
+                        <input type="text" name="settings[gtm_id]" value="{{ old('settings.gtm_id', $settings['gtm_id'] ?? '') }}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                               placeholder="GTM-XXXXXXX">
+                    </div>
+                </div>
+            </div>
+
+            {{-- PWA --}}
+            <div x-show="tab === 'pwa'" class="space-y-6">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
+                    <h3 class="text-lg font-semibold text-gray-900 pb-3 border-b border-gray-100">Progressive Web App</h3>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nome do App</label>
+                        <input type="text" name="settings[pwa_name]" value="{{ old('settings.pwa_name', $settings['pwa_name'] ?? '') }}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nome Curto</label>
+                        <input type="text" name="settings[pwa_short_name]" value="{{ old('settings.pwa_short_name', $settings['pwa_short_name'] ?? '') }}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Cor do Tema</label>
+                        <input type="color" name="settings[pwa_theme_color]" value="{{ old('settings.pwa_theme_color', $settings['pwa_theme_color'] ?? '#dc2626') }}"
+                               class="w-16 h-10 border border-gray-300 rounded-lg cursor-pointer">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Cor de Fundo</label>
+                        <input type="color" name="settings[pwa_background_color]" value="{{ old('settings.pwa_background_color', $settings['pwa_background_color'] ?? '#ffffff') }}"
+                               class="w-16 h-10 border border-gray-300 rounded-lg cursor-pointer">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Ícone 192x192</label>
+                        <input type="file" name="pwa_icon_192" accept="image/png"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-sm file:bg-red-50 file:text-red-600 hover:file:bg-red-100">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Ícone 512x512</label>
+                        <input type="file" name="pwa_icon_512" accept="image/png"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-sm file:bg-red-50 file:text-red-600 hover:file:bg-red-100">
+                    </div>
+                </div>
+            </div>
+
+            {{-- EMAIL --}}
+            <div x-show="tab === 'email'" class="space-y-6">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
+                    <h3 class="text-lg font-semibold text-gray-900 pb-3 border-b border-gray-100">Configuração de E-mail (SMTP)</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Host SMTP</label>
+                            <input type="text" name="settings[mail_host]" value="{{ old('settings.mail_host', $settings['mail_host'] ?? '') }}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                                   placeholder="smtp.gmail.com">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Porta</label>
+                            <input type="number" name="settings[mail_port]" value="{{ old('settings.mail_port', $settings['mail_port'] ?? '587') }}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Usuário</label>
+                            <input type="text" name="settings[mail_username]" value="{{ old('settings.mail_username', $settings['mail_username'] ?? '') }}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Senha</label>
+                            <input type="password" name="settings[mail_password]" value="{{ old('settings.mail_password', $settings['mail_password'] ?? '') }}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">E-mail Remetente</label>
+                            <input type="email" name="settings[mail_from_address]" value="{{ old('settings.mail_from_address', $settings['mail_from_address'] ?? '') }}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nome Remetente</label>
+                            <input type="text" name="settings[mail_from_name]" value="{{ old('settings.mail_from_name', $settings['mail_from_name'] ?? '') }}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Criptografia</label>
+                        <select name="settings[mail_encryption]"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                            <option value="tls" {{ ($settings['mail_encryption'] ?? '') === 'tls' ? 'selected' : '' }}>TLS</option>
+                            <option value="ssl" {{ ($settings['mail_encryption'] ?? '') === 'ssl' ? 'selected' : '' }}>SSL</option>
+                            <option value="" {{ empty($settings['mail_encryption'] ?? '') ? 'selected' : '' }}>Nenhuma</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            {{-- AVANÇADO --}}
+            <div x-show="tab === 'avancado'" class="space-y-6">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
+                    <h3 class="text-lg font-semibold text-gray-900 pb-3 border-b border-gray-100">Avançado</h3>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Scripts no &lt;head&gt;</label>
+                        <textarea name="settings[head_scripts]" rows="4"
+                                  class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm font-mono focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                                  placeholder="<!-- Google Tag, pixels, etc. -->">{{ old('settings.head_scripts', $settings['head_scripts'] ?? '') }}</textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Scripts antes do &lt;/body&gt;</label>
+                        <textarea name="settings[body_scripts]" rows="4"
+                                  class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm font-mono focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                                  placeholder="<!-- Chat widgets, analytics, etc. -->">{{ old('settings.body_scripts', $settings['body_scripts'] ?? '') }}</textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">CSS Personalizado</label>
+                        <textarea name="settings[custom_css]" rows="4"
+                                  class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm font-mono focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                                  placeholder="/* Estilos personalizados */">{{ old('settings.custom_css', $settings['custom_css'] ?? '') }}</textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Modo de Manutenção</label>
+                        <div x-data="{ maintenance: {{ ($settings['maintenance_mode'] ?? false) ? 'true' : 'false' }} }">
+                            <button type="button" @click="maintenance = !maintenance"
+                                    :class="maintenance ? 'bg-red-600' : 'bg-gray-300'"
+                                    class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors">
+                                <span :class="maintenance ? 'translate-x-6' : 'translate-x-1'"
+                                      class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"></span>
+                            </button>
+                            <input type="hidden" name="settings[maintenance_mode]" :value="maintenance ? 1 : 0">
+                            <p class="text-xs text-gray-500 mt-1">Quando ativado, o site exibirá uma página de manutenção para visitantes.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end mt-6">
+                <button type="submit" class="px-6 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors shadow-sm">
+                    Salvar Configurações
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@push('scripts')
+<script>
+    function settingsPage() {
+        return { tab: '{{ request('tab', 'geral') }}' }
+    }
+</script>
+@endpush
+@endsection
