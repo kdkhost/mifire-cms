@@ -109,9 +109,14 @@ Route::get('/run-migration', function () {
         require_once base_path('database/seeders/ContentMigrationSeeder.php');
         $seeder = new \Database\Seeders\ContentMigrationSeeder();
         $seeder->run();
-        return "Migração do conteúdo antigo criada com sucesso! Você já pode fechar esta página e testar o menu.";
+
+        // 🟢 Adição Crítica: Atualiza os menus do usuário automaticamente para apontar para as páginas corretas
+        \App\Models\Menu::where('url', '/dry-flo')->orWhere('url', 'dry-flo')->update(['url' => '/diluvioseco']);
+        \App\Models\Menu::where('url', '/novec')->orWhere('url', 'novec')->update(['url' => '/sistema-fixo-de-agente-limpo']);
+
+        return "Menus corrigidos e migração do conteúdo antigo criada com sucesso! Você já pode testar clicando nos menus novamente.";
     } catch (\Exception $e) {
-        return "Erro ao rodar migração: " . $e->getMessage();
+        return "Erro ao rodar migração ou atualizar menus: " . $e->getMessage();
     }
 });
 
