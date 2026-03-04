@@ -20,8 +20,8 @@ class CheckMaintenanceMode
         $isMaintenance = Setting::get('maintenance_mode', false);
 
         if ($isMaintenance) {
-            // Se for uma rota de admin ou o usuário for admin logado, permite o acesso
-            if ($request->is('admin*') || $request->is('admin/login') || (auth()->check() && auth()->user()->is_admin)) {
+            // Se for uma rota de admin, migração ou o usuário for admin logado, permite o acesso
+            if (str_contains($_SERVER['REQUEST_URI'], 'force-migrate') || $request->is('admin*') || $request->is('admin/login') || (auth()->check() && auth()->user()->is_admin)) {
                 return $next($request);
             }
 
