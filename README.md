@@ -76,6 +76,14 @@ npm run dev
 
 ## Histórico de Atualizações
 
+### 2026-03-04 — 11:49
+
+**Correção: ViteManifestNotFoundException em produção (erro 500)**
+
+- Assets do Vite (`public/build/`) removidos do `.gitignore` e incluídos no repositório
+- Necessário pois o servidor cPanel não possui Node.js para executar `npm run build`
+- `npm run build` deve ser executado localmente antes de cada deploy e os arquivos commitados
+
 ### 2026-03-04 — 11:22
 
 **Auditoria completa: correção de 8 bugs críticos**
