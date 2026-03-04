@@ -18,7 +18,8 @@
             </a>
         </div>
 
-        <form action="{{ route('admin.social-links.store') }}" method="POST" class="ajax-form">
+        <form action="{{ route('admin.social-links.store') }}" method="POST" enctype="multipart/form-data"
+            class="ajax-form">
             @csrf
             <div class="max-w-2xl space-y-6">
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
@@ -42,13 +43,37 @@
                             placeholder="https://www.instagram.com/seuusuario">
                         @error('url') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
-                    <div>
-                        <label for="icon" class="block text-sm font-medium text-gray-700 mb-1">Classe do Ícone</label>
-                        <input type="text" name="icon" id="icon" value="{{ old('icon') }}"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                            placeholder="Ex: fab fa-instagram">
-                        <p class="text-xs text-gray-400 mt-1">Classe CSS do ícone (Font Awesome, etc.)</p>
-                        @error('icon') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+
+                    <div x-data="{ uploadType: 'class' }">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Ícone</label>
+                        <div class="flex gap-4 mb-4">
+                            <label class="inline-flex items-center">
+                                <input type="radio" x-model="uploadType" value="class"
+                                    class="text-red-600 focus:ring-red-500">
+                                <span class="ml-2 text-sm text-gray-600">Classe CSS</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" x-model="uploadType" value="file"
+                                    class="text-red-600 focus:ring-red-500">
+                                <span class="ml-2 text-sm text-gray-600">Upload de Arquivo</span>
+                            </label>
+                        </div>
+
+                        <div x-show="uploadType === 'class'">
+                            <label for="icon" class="block text-sm font-medium text-gray-700 mb-1">Classe do Ícone</label>
+                            <input type="text" name="icon" id="icon" value="{{ old('icon') }}"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                                placeholder="Ex: fab fa-instagram">
+                            <p class="text-xs text-gray-400 mt-1">Classe CSS do ícone (Font Awesome, etc.)</p>
+                        </div>
+
+                        <div x-show="uploadType === 'file'" x-cloak>
+                            <label for="icon_file" class="block text-sm font-medium text-gray-700 mb-1">Arquivo do
+                                Ícone</label>
+                            <input type="file" name="icon_file" id="icon_file" accept="image/*"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                            <p class="text-xs text-gray-400 mt-1">Formatos aceitos: SVG, PNG, JPG (Máx. 1MB)</p>
+                        </div>
                     </div>
 
                     <div class="flex items-center justify-between">

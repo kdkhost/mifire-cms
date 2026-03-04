@@ -32,20 +32,29 @@ class SocialLinkController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'platform'   => ['required', 'string', 'max:100'],
-            'url'        => ['required', 'url', 'max:500'],
-            'icon'       => ['nullable', 'string', 'max:100'],
-            'is_active'  => ['boolean'],
+            'platform' => ['required', 'string', 'max:100'],
+            'url' => ['required', 'url', 'max:500'],
+            'icon' => ['nullable', 'string', 'max:255'],
+            'icon_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:1024'],
+            'is_active' => ['boolean'],
             'sort_order' => ['nullable', 'integer'],
         ]);
 
-        $validated['is_active']  = $request->boolean('is_active');
+        if ($request->hasFile('icon_file')) {
+            $path = $request->file('icon_file')->store('social-icons', 'public');
+            $validated['icon'] = $path;
+        }
+
+        $validated['is_active'] = $request->boolean('is_active');
         $validated['sort_order'] = $validated['sort_order'] ?? 0;
 
         SocialLink::create($validated);
 
-        return redirect()->route('admin.social-links.index')
-            ->with('success', 'Rede social criada com sucesso.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Rede social criada com sucesso.',
+            'redirect' => route('admin.social-links.index')
+        ]);
     }
 
     /**
@@ -62,20 +71,34 @@ class SocialLinkController extends Controller
     public function update(Request $request, SocialLink $socialLink)
     {
         $validated = $request->validate([
-            'platform'   => ['required', 'string', 'max:100'],
-            'url'        => ['required', 'url', 'max:500'],
-            'icon'       => ['nullable', 'string', 'max:100'],
-            'is_active'  => ['boolean'],
+            'platform' => ['required', 'string', 'max:100'],
+            'url' => ['required', 'url', 'max:500'],
+            'icon' => ['nullable', 'string', 'max:255'],
+            'icon_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:1024'],
+            'is_active' => ['boolean'],
             'sort_order' => ['nullable', 'integer'],
         ]);
 
-        $validated['is_active']  = $request->boolean('is_active');
+        if ($request->hasFile('icon_file')) {
+            // Remove old icon if it's a file
+            if ($socialLink->icon && \Storage::disk('public')->exists($socialLink->icon)) {
+                \Storage::disk('public')->delete($socialLink->icon);
+            }
+
+            $path = $request->file('icon_file')->store('social-icons', 'public');
+            $validated['icon'] = $path;
+        }
+
+        $validated['is_active'] = $request->boolean('is_active');
         $validated['sort_order'] = $validated['sort_order'] ?? $socialLink->sort_order;
 
         $socialLink->update($validated);
 
-        return redirect()->route('admin.social-links.index')
-            ->with('success', 'Rede social atualizada com sucesso.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Rede social atualizada com sucesso.',
+            'redirect' => route('admin.social-links.index')
+        ]);
     }
 
     /**
@@ -83,6 +106,10 @@ class SocialLinkController extends Controller
      */
     public function destroy(SocialLink $socialLink)
     {
+        if ($socialLink->icon && \Storage::disk('public')->exists($socialLink->icon)) {
+            \Storage::disk('public')->delete($socialLink->icon);
+        }
+
         $socialLink->delete();
 
         return redirect()->route('admin.social-links.index')
