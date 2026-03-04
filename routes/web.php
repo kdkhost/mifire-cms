@@ -60,6 +60,8 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     Route::get('visits/export', [Admin\VisitController::class, 'export'])->name('visits.export');
 
     Route::resource('addresses', Admin\AddressController::class);
+    Route::get('contact-departments', [Admin\ContactDepartmentController::class, 'index'])->name('contact-departments.index');
+    Route::post('contact-departments', [Admin\ContactDepartmentController::class, 'store'])->name('contact-departments.store');
     Route::resource('menus', Admin\MenuController::class);
     Route::post('menus/reorder', [Admin\MenuController::class, 'updateOrder'])->name('menus.reorder');
     Route::resource('social-links', Admin\SocialLinkController::class);

@@ -291,8 +291,8 @@
                 {{-- Col 1: Logo e Texto --}}
                 <div class="space-y-6">
                     <a href="{{ route('home') }}" class="inline-block transform hover:scale-105 transition-transform duration-300">
-                        @if($settings->get('logo'))
-                            <img src="{{ asset('storage/' . $settings->get('logo')) }}" alt="MiFire" class="h-14 w-auto drop-shadow-lg">
+                        @if($settings->get('logo_white'))
+                            <img src="{{ asset('storage/' . $settings->get('logo_white')) }}" alt="MiFire" class="h-14 w-auto drop-shadow-lg">
                         @else
                             <span class="text-white font-black text-3xl tracking-tighter flex items-center gap-2">
                                 <span class="bg-red-600 px-2 py-0.5 rounded-sm italic">MI</span>FIRE
