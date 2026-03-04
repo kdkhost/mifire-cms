@@ -240,7 +240,7 @@
                 x-transition:leave="transition-transform ease-in-out duration-300"
                 x-transition:leave-start="translate-x-0"
                 x-transition:leave-end="-translate-x-full"
-                class="fixed inset-y-0 left-0 w-[280px] bg-gray-950 shadow-2xl flex flex-col z-[101]"
+                class="fixed inset-y-0 left-0 w-[280px] bg-gray-900 shadow-2xl flex flex-col z-[101]"
             >
                 {{-- Sidebar Header --}}
                 <div class="p-6 border-b border-white/5 flex items-center justify-between">
