@@ -307,7 +307,14 @@
                                         </span>
                                         <svg class="w-4 h-4 transition-transform duration-200" :class="expanded ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                                     </button>
-                                    <div x-show="expanded" x-collapse class="pl-4 mt-1 space-y-1">
+                                    <div x-show="expanded" 
+                                         x-transition:enter="transition ease-out duration-200"
+                                         x-transition:enter-start="opacity-0 -translate-y-2"
+                                         x-transition:enter-end="opacity-100 translate-y-0"
+                                         x-transition:leave="transition ease-in duration-150"
+                                         x-transition:leave-start="opacity-100 translate-y-0"
+                                         x-transition:leave-end="opacity-0 -translate-y-2"
+                                         class="pl-4 mt-1 space-y-1" x-cloak>
                                         @foreach($menu->children as $child)
                                             <a 
                                                 href="{{ $child->url ?? ($child->page ? route('page.show', $child->page->slug) : '#') }}"
