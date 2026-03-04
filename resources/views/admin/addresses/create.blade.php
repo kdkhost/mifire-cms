@@ -36,16 +36,15 @@
                                 class="text-red-500">*</span></label>
                         <input type="text" name="address" id="address" value="{{ old('address') }}" required
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                            placeholder="Rua, número (Deixe vazio ou use '.' para Departamentos)">
+                            placeholder="Rua, número">
                         @error('address') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div>
-                        <label for="complement" class="block text-sm font-medium text-gray-700 mb-1">E-mail do Setor /
-                            Complemento</label>
+                        <label for="complement" class="block text-sm font-medium text-gray-700 mb-1">Complemento</label>
                         <input type="text" name="complement" id="complement" value="{{ old('complement') }}"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                            placeholder="ex: comercial@exemplo.com.br ou Sala 101">
+                            placeholder="Sala, Andar, Bloco">
                         @error('complement') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
@@ -88,8 +87,7 @@
                             @error('phone') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
                         <div>
-                            <label for="phone2" class="block text-sm font-medium text-gray-700 mb-1">WhatsApp /
-                                Celular</label>
+                            <label for="phone2" class="block text-sm font-medium text-gray-700 mb-1">Telefone 2</label>
                             <input type="text" name="phone2" id="phone2" value="{{ old('phone2') }}"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
                                 placeholder="(00) 00000-0000" data-mask="phone">

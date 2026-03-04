@@ -70,6 +70,7 @@
                     ['route' => 'admin.visits.index', 'label' => 'Visitas', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>'],
                     ['route' => 'admin.menus.index', 'label' => 'Menus', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>'],
                     ['route' => 'admin.addresses.index', 'label' => 'Endereços', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>'],
+                    ['route' => 'admin.contact-departments.index', 'label' => 'Departamentos', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>'],
                     ['route' => 'admin.social-links.index', 'label' => 'Redes Sociais', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>'],
                     ['route' => 'admin.email-templates.index', 'label' => 'Templates de Email', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 19V5a2 2 0 012-2h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2zM3 7h18M7 3v4"/>'],
                     ['route' => 'admin.settings.index', 'label' => 'Configurações', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>'],
@@ -82,7 +83,7 @@
                         $isActive = request()->routeIs($item['route'] . '*');
                     @endphp
                     <a href="{{ route($item['route']) }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-150
-                                          {{ $isActive
+                                                  {{ $isActive
                 ? 'bg-red-600 text-white shadow-lg shadow-red-600/20'
                 : 'text-gray-400 hover:text-white hover:bg-gray-800' }}">
                         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -92,8 +93,9 @@
 
                         {{-- Badge for Contacts --}}
                         @if (isset($item['badge']) && isset(${$item['badge']}) && ${$item['badge']} > 0)
-                            <span class="ml-auto inline-flex items-center justify-center w-5 h-5 text-xs font-bold rounded-full
-                                                             {{ $isActive ? 'bg-white text-red-600' : 'bg-red-600 text-white' }}">
+                            <span
+                                class="ml-auto inline-flex items-center justify-center w-5 h-5 text-xs font-bold rounded-full
+                                                                         {{ $isActive ? 'bg-white text-red-600' : 'bg-red-600 text-white' }}">
                                 {{ ${$item['badge']} }}
                             </span>
                         @endif

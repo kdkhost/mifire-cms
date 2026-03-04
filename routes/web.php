@@ -116,4 +116,3 @@ Route::get('/fix-storage', function () {
         return "Erro ao criar link simbólico: " . $e->getMessage();
     }
 });
-
