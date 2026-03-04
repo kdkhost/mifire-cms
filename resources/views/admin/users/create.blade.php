@@ -70,8 +70,8 @@
                     <div>
                         <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Telefone</label>
                         <input type="text" name="phone" id="phone" value="{{ old('phone') }}"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                            placeholder="(00) 00000-0000">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:focus:border-red-500"
+                            placeholder="(00) 00000-0000" data-mask="phone">
                         @error('phone') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
@@ -139,7 +139,7 @@
                 return {
                     isAdmin: {{ old('is_admin', 0) ? 'true' : 'false' }},
                     isActive: {{ old('is_active', 1) ? 'true' : 'false' }}
-                }
+                        }
             }
         </script>
     @endpush

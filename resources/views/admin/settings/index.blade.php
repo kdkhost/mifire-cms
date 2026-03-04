@@ -104,21 +104,21 @@
                             <input type="text" name="settings[phone]"
                                 value="{{ old('settings.phone', $settings['phone'] ?? '') }}"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                                placeholder="(00) 0000-0000">
+                                placeholder="(00) 0000-0000" data-mask="phone">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Telefone Secundário</label>
                             <input type="text" name="settings[phone2]"
                                 value="{{ old('settings.phone2', $settings['phone2'] ?? '') }}"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                                placeholder="(00) 0000-0000">
+                                placeholder="(00) 0000-0000" data-mask="phone">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">WhatsApp</label>
                             <input type="text" name="settings[whatsapp]"
                                 value="{{ old('settings.whatsapp', $settings['whatsapp'] ?? '') }}"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                                placeholder="5511999999999">
+                                placeholder="(00) 00000-0000" data-mask="phone">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Google Maps (URL Embed)</label>

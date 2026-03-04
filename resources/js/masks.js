@@ -14,17 +14,24 @@ const MASKS = {
         apply(el) {
             const handler = (e) => {
                 const value = e.target.value.replace(/\D/g, '');
+                VMasker(e.target).unMask();
                 if (value.length > 10) {
-                    VMasker(e.target).unMask();
                     VMasker(e.target).maskPattern('(99) 99999-9999');
                 } else {
-                    VMasker(e.target).unMask();
-                    VMasker(e.target).maskPattern('(99) 9999-99999');
+                    VMasker(e.target).maskPattern('(99) 9999-9999');
                 }
+                // Maintain cursor position if possible
+                const cursor = e.target.selectionStart;
+                e.target.setSelectionRange(cursor, cursor);
             };
             el.addEventListener('input', handler);
             // Apply initial mask
-            VMasker(el).maskPattern('(99) 99999-9999');
+            const initialValue = el.value.replace(/\D/g, '');
+            if (initialValue.length > 10) {
+                VMasker(el).maskPattern('(99) 99999-9999');
+            } else {
+                VMasker(el).maskPattern('(99) 9999-9999');
+            }
         },
     },
 
@@ -69,17 +76,21 @@ const MASKS = {
         apply(el) {
             const handler = (e) => {
                 const value = e.target.value.replace(/\D/g, '');
+                VMasker(e.target).unMask();
                 if (value.length <= 11) {
-                    VMasker(e.target).unMask();
-                    VMasker(e.target).maskPattern('999.999.999-999');
+                    VMasker(e.target).maskPattern('999.999.999-99');
                 } else {
-                    VMasker(e.target).unMask();
                     VMasker(e.target).maskPattern('99.999.999/9999-99');
                 }
             };
             el.addEventListener('input', handler);
-            // Apply CPF mask initially
-            VMasker(el).maskPattern('999.999.999-99');
+            // Apply initial mask
+            const initialValue = el.value.replace(/\D/g, '');
+            if (initialValue.length <= 11) {
+                VMasker(el).maskPattern('999.999.999-99');
+            } else {
+                VMasker(el).maskPattern('99.999.999/9999-99');
+            }
         },
     },
 };
@@ -152,6 +163,21 @@ export function applyMask(el, maskType) {
         maskConfig.apply(el);
         el.dataset.maskApplied = 'true';
     }
+}
+
+// Export functions
+export {
+    initMasks,
+    unmask,
+    unmaskMoney,
+    formatMoney,
+    applyMask,
+};
+
+// Global expose for AJAX handler
+if (typeof window !== 'undefined') {
+    // Global mask initializer
+    window.initMasks = initMasks;
 }
 
 export default {
