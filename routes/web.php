@@ -118,3 +118,12 @@ Route::get('/fix-storage', function () {
         return "Erro ao criar link simbólico: " . $e->getMessage();
     }
 });
+
+Route::get('/run-migration', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'Database\Seeders\ContentMigrationSeeder']);
+        return "Migração do conteúdo antigo criada com sucesso! Você já pode fechar esta página e testar o menu.";
+    } catch (\Exception $e) {
+        return "Erro ao rodar migração: " . $e->getMessage();
+    }
+});
