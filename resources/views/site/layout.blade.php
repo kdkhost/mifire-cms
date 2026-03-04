@@ -509,8 +509,29 @@
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
     </button>
 
-    {{-- ═══ PWA Service Worker ═══ --}}
-    @if($pwaEnabled)
+    {{-- ═══ PWA Service Worker & Install Banner ═══ --}}
+    @if(filter_var($pwaEnabled ?? false, FILTER_VALIDATE_BOOLEAN))
+        {{-- PWA Install Banner UI --}}
+        <div id="pwa-install-banner" class="hidden fixed bottom-0 left-0 right-0 z-50 p-4 bg-white border-t border-gray-200 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] transition-transform transform translate-y-full md:flex md:items-center md:justify-center">
+            <div class="max-w-7xl mx-auto flex items-center justify-between gap-4 w-full">
+                <div class="flex items-center gap-3">
+                    <img src="{{ $settings->get('pwa_icon_192') ? asset('storage/' . $settings->get('pwa_icon_192')) : asset('pwa/icons/icon-192x192.png') }}" class="w-12 h-12 rounded-xl shadow-sm" alt="App Icon">
+                    <div>
+                        <h4 class="text-sm font-bold text-gray-900 leading-tight">Mifire App</h4>
+                        <p class="text-xs text-gray-500">Instale nosso aplicativo para acesso rápido.</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="document.getElementById('pwa-install-banner').classList.add('hidden')" class="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                    <button onclick="installPWA()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg shadow-sm transition-colors whitespace-nowrap">
+                        Instalar
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <script>
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
@@ -520,13 +541,15 @@
                 });
             }
 
-            // PWA Install Prompt
+            // PWA Install Prompt Logic
             let deferredPrompt;
             window.addEventListener('beforeinstallprompt', (e) => {
                 e.preventDefault();
                 deferredPrompt = e;
                 const installBanner = document.getElementById('pwa-install-banner');
-                if (installBanner) installBanner.classList.remove('hidden');
+                if (installBanner) {
+                    installBanner.classList.remove('hidden', 'translate-y-full');
+                }
             });
 
             function installPWA() {
@@ -538,7 +561,9 @@
                         }
                         deferredPrompt = null;
                         const installBanner = document.getElementById('pwa-install-banner');
-                        if (installBanner) installBanner.classList.add('hidden');
+                        if (installBanner) {
+                            installBanner.classList.add('hidden');
+                        }
                     });
                 }
             }
