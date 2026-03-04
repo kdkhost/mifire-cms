@@ -255,7 +255,9 @@
             </div>
         </div>
 
-        {{-- Sidebar Mobile (Android Style) --}}
+        </header>
+
+    {{-- Sidebar Mobile (Android Style) --}}
         <div 
             x-show="mobileMenu" 
             class="fixed inset-0 z-[100] lg:hidden" 
@@ -373,9 +375,8 @@
                 </div>
             </div>
         </div>
-    </header>
 
-    {{-- ═══ MAIN CONTENT ═══ --}}
+{{-- ═══ MAIN CONTENT ═══ --}}
     <main class="min-h-screen">
         @yield('content')
     </main>
