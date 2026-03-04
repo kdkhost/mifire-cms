@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Route;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__.'/../routes/web.php',
-        commands: __DIR__.'/../routes/console.php',
+        web: __DIR__ . '/../routes/web.php',
+        commands: __DIR__ . '/../routes/console.php',
         health: '/up',
         then: function () {
             Route::middleware('web')
@@ -23,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'install' => InstallMiddleware::class,
             'admin' => AdminMiddleware::class,
             'track.visit' => TrackVisit::class,
+            'maintenance' => \App\Http\Middleware\CheckMaintenanceMode::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

@@ -84,9 +84,9 @@ Route::get('/sw.js', [PwaController::class, 'serviceWorker']);
 
 Route::get('/sitemap.xml', [SitemapController::class, 'index']);
 
-// ── Frontend Routes (with visit tracking middleware) ──────
+// ── Frontend Routes (with visit tracking + maintenance middleware) ──────
 
-Route::middleware(['track.visit'])->group(function () {
+Route::middleware(['track.visit', 'maintenance'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
     Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
