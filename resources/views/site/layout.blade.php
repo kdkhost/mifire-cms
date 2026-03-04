@@ -66,6 +66,15 @@
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #dc2626; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #b91c1c; }
+
+        /* Preloader pulse effect */
+        @keyframes pulse-logo {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+        .preloader-img { animation: pulse-logo 2s infinite ease-in-out; }
+        .preloader-wrapper.fade-out { opacity: 0; pointer-events: none; transition: opacity 0.6s ease-out; }
     </style>
     {{-- CSS Personalizado (definido nas config. avançadas do admin) --}}
     @if($settings->get('custom_css'))
@@ -78,6 +87,32 @@
     @endif
 </head>
 <body class="bg-white text-gray-800 antialiased" x-data="{ mobileMenu: false }">
+
+    {{-- ═══ PRELOADER (TELA DE CARREGAMENTO) ═══ --}}
+    @if(filter_var($settings->get('preloader_enabled', false), FILTER_VALIDATE_BOOLEAN))
+        @php
+            $preloaderBg = $settings->get('preloader_bg_color', '#ffffff');
+            $preloaderImg = $settings->get('preloader_image') ? asset('storage/' . $settings->get('preloader_image')) : ($settings->get('site_logo') ? asset('storage/' . $settings->get('site_logo')) : null);
+        @endphp
+        <div id="site-preloader" class="preloader-wrapper fixed inset-0 z-[100] flex items-center justify-center transition-opacity" style="background-color: {{ $preloaderBg }};">
+            @if($preloaderImg)
+                <img src="{{ $preloaderImg }}" alt="Loading" class="preloader-img h-24 sm:h-32 object-contain drop-shadow-xl" />
+            @else
+                <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-red-600 border-opacity-70"></div>
+            @endif
+        </div>
+        <script>
+            window.addEventListener('load', function() {
+                const preloader = document.getElementById('site-preloader');
+                if (preloader) {
+                    // Adiciona um pequeno delay de 500ms para o efeito visual da animação ser lido e suave
+                    setTimeout(() => { preloader.classList.add('fade-out'); }, 500);
+                    // Remove do DOM após o despintado
+                    setTimeout(() => { preloader.remove(); }, 1200);
+                }
+            });
+        </script>
+    @endif
 
     {{-- ═══ TOP BAR ═══ --}}
     <div class="bg-gray-900 text-gray-300 text-xs py-2 hidden lg:block">

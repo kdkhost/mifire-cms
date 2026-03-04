@@ -32,6 +32,7 @@ class SettingController extends Controller
             'site_favicon' => ['nullable', 'image', 'mimes:ico,png,svg,jpg,jpeg,gif,webp', 'max:1024'],
             'pwa_icon_192' => ['nullable', 'image', 'mimes:png', 'max:2048'],
             'pwa_icon_512' => ['nullable', 'image', 'mimes:png', 'max:2048'],
+            'preloader_image' => ['nullable', 'image', 'mimes:png,gif,jpeg,svg', 'max:2048'],
         ]);
 
         // Handle file uploads: [input field name => [setting key, group]]
@@ -41,6 +42,7 @@ class SettingController extends Controller
             'logo_white' => ['logo_white', 'general'],
             'pwa_icon_192' => ['pwa_icon_192', 'pwa'],
             'pwa_icon_512' => ['pwa_icon_512', 'pwa'],
+            'preloader_image' => ['preloader_image', 'avancado'],
         ];
 
         foreach ($fileFields as $inputName => [$settingKey, $group]) {
@@ -88,7 +90,7 @@ class SettingController extends Controller
             return 'contato';
         if (in_array($key, ['mission', 'vision', 'values', 'company_description']))
             return 'general';
-        if (in_array($key, ['head_scripts', 'body_scripts', 'custom_css', 'maintenance_mode']))
+        if (in_array($key, ['head_scripts', 'body_scripts', 'custom_css', 'maintenance_mode', 'preloader_enabled', 'preloader_bg_color']))
             return 'avancado';
 
         return 'general';

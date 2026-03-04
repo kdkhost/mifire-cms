@@ -9,6 +9,16 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    {{-- Favicon Dinâmico --}}
+    @php
+        $faviconPath = \App\Models\Setting::get('site_favicon');
+    @endphp
+    @if($faviconPath)
+        <link rel="icon" type="image/png" href="{{ asset('storage/' . $faviconPath) }}">
+    @else
+        <link rel="icon" type="image/png" href="/favicon.ico">
+    @endif
+
     {{-- SweetAlert2 --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -83,7 +93,7 @@
                         $isActive = request()->routeIs($item['route'] . '*');
                     @endphp
                     <a href="{{ route($item['route']) }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-150
-                                                  {{ $isActive
+                                                                          {{ $isActive
                 ? 'bg-red-600 text-white shadow-lg shadow-red-600/20'
                 : 'text-gray-400 hover:text-white hover:bg-gray-800' }}">
                         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -95,7 +105,7 @@
                         @if (isset($item['badge']) && isset(${$item['badge']}) && ${$item['badge']} > 0)
                             <span
                                 class="ml-auto inline-flex items-center justify-center w-5 h-5 text-xs font-bold rounded-full
-                                                                         {{ $isActive ? 'bg-white text-red-600' : 'bg-red-600 text-white' }}">
+                                                                                                             {{ $isActive ? 'bg-white text-red-600' : 'bg-red-600 text-white' }}">
                                 {{ ${$item['badge']} }}
                             </span>
                         @endif
@@ -319,64 +329,231 @@
                         submitBtn.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processando...';
                     }
 
-                    fetch(url, {
-                        method: method,
-                        body: formData,
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    Swal.fire({
+                        title: 'Enviando arquivos...',
+                        html: '<div class="w-full bg-gray-200 rounded-full h-2.5 mt-2 mb-1"><div id="swal-progress-bar" class="bg-red-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div></div><span id="swal-progress-text" class="text-xs text-gray-500">0%</span>',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
                         }
-                    })
-                        .then(async response => {
-                            const data = await response.json();
+                    });
 
-                            if (!response.ok) {
-                                if (response.status === 422) {
-                                    // Validation errors
-                                    let errorMessages = Object.values(data.errors).flat().join('<br>');
-                                    throw new Error(errorMessages);
+                    const xhr = new XMLHttpRequest();
+                    xhr.open(method, url, true);
+                    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                    xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+
+                    xhr.upload.addEventListener("progress", function (e) {
+                        if (e.lengthComputable) {
+                            const percentComplete = Math.round((e.loaded / e.total) * 100);
+                            const progressBar = document.getElementById('swal-progress-bar');
+                            const progressText = document.getElementById('swal-progress-text');
+                            if (progressBar) progressBar.style.width = percentComplete + '%';
+                            if (progressText) progressText.innerText = percentComplete + '%';
+                        }
+                    });
+
+                    xhr.onload = function () {
+                        if (xhr.status >= 200 && xhr.status < 300) {
+                            try {
+                                const data = JSON.parse(xhr.responseText);
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Sucesso!',
+                                    html: data.message || 'Dados salvos com sucesso.',
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    showConfirmButton: false
+                                });
+
+                                if (data.redirect) {
+                                    setTimeout(() => window.location.href = data.redirect, 1500);
+                                } else {
+                                    if (window.initMasks) window.initMasks();
+                                    setTimeout(() => { if (window.initDragAndDrop) window.initDragAndDrop(); }, 300);
                                 }
-                                throw new Error(data.message || 'Ocorreu um erro ao processar a requisição.');
+                            } catch (e) {
+                                showError('Erro ao processar resposta do servidor.');
                             }
-                            return data;
-                        })
-                        .then(data => {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Sucesso!',
-                                html: data.message || 'Dados salvos com sucesso.',
-                                timer: 3000,
-                                timerProgressBar: true,
-                                showConfirmButton: false
-                            });
+                        } else {
+                            try {
+                                const data = JSON.parse(xhr.responseText);
+                                if (xhr.status === 422) {
+                                    showError(Object.values(data.errors).flat().join('<br>'));
+                                } else {
+                                    showError(data.message || 'Ocorreu um erro ao processar a requisição.');
+                                }
+                            } catch (e) {
+                                showError('Ocorreu um erro inesperado.');
+                            }
+                        }
+                    };
 
-                            if (data.redirect) {
-                                setTimeout(() => window.location.href = data.redirect, 1500);
-                            } else {
-                                // Re-init masks if content might have changed
-                                if (window.initMasks) window.initMasks();
-                            }
-                        })
-                        .catch(error => {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Ops!',
-                                html: error.message,
-                                confirmButtonColor: '#DC2626',
-                            });
-                        })
-                        .finally(() => {
-                            if (submitBtn) {
-                                submitBtn.disabled = false;
-                                submitBtn.innerHTML = originalBtnContent;
-                            }
+                    xhr.onerror = function () {
+                        showError('Falha na comunicação com o servidor.');
+                    };
+
+                    xhr.onloadend = function () {
+                        if (submitBtn) {
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = originalBtnContent;
+                        }
+                    };
+
+                    xhr.send(formData);
+
+                    function showError(msg) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Ops!',
+                            html: msg,
+                            confirmButtonColor: '#DC2626',
                         });
+                    }
                 }
             });
-        });
-    </script>
 
-    @stack('scripts')
-</body>
+            /**
+             * GLOBAL DRAG-AND-DROP FILE UPLOAD HANDLER
+             * Converte automaticamente inputs de file tradicionais em dropzones modernas.
+             */
+            window.initDragAndDrop = function () {
+                const fileInputs = document.querySelectorAll('input[type="file"]:not(.dropzone-initialized)');
 
-</html>
+                fileInputs.forEach(input => {
+                    input.classList.add('dropzone-initialized');
+                    input.classList.add('hidden'); // Hide original input
+
+                    // Creates wrapper
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'relative flex flex-col items-center justify-center p-6 mt-1 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer group overflow-hidden min-h-[140px]';
+
+                    const placeholder = document.createElement('div');
+                    placeholder.className = 'text-center z-10 pointer-events-none dropzone-content';
+                    placeholder.innerHTML = `
+                        <svg class="mx-auto h-12 w-12 text-gray-400 group-hover:text-red-500 transition-colors mb-3" fill="none" stroke="currentColor" viewBox="0 0 48 48">
+                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                        <p class="text-sm font-medium text-gray-700">Arraste um arquivo ou <span class="text-red-600">clique para selecionar</span></p>
+                        <p class="text-xs text-gray-500 mt-1">PNG, JPG, SVG ou GIF até 2MB</p>
+                    `;
+
+                    const previewImg = document.createElement('img');
+                    previewImg.className = 'absolute inset-0 w-full h-full object-contain bg-gray-900/10 backdrop-blur-sm hidden z-20 transition-opacity p-2 rounded-xl';
+
+                    const fileNameBadge = document.createElement('span');
+                    fileNameBadge.className = 'absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black/70 text-white text-[10px] px-2 py-1 rounded-full hidden z-30 max-w-[90%] truncate';
+
+                    const clearBtn = document.createElement('button');
+                    clearBtn.type = 'button';
+                    clearBtn.className = 'absolute top-2 right-2 p-1.5 bg-red-600 hover:bg-red-700 text-white rounded-full hidden z-40 shadow-sm transition-transform hover:scale-110';
+                    clearBtn.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+
+                    input.parentNode.insertBefore(wrapper, input);
+                    wrapper.appendChild(input);
+                    wrapper.appendChild(placeholder);
+                    wrapper.appendChild(previewImg);
+                    wrapper.appendChild(fileNameBadge);
+                    wrapper.appendChild(clearBtn);
+
+                    // Image preview pre-existing check (se a view do blade já tiver gerado um img logo abaixo, tentamos importar o src dele e oculta-lo)
+                    const existingImgSibling = wrapper.nextElementSibling;
+                    if (existingImgSibling && existingImgSibling.tagName === 'DIV' && existingImgSibling.querySelector('img')) {
+                        const imgTag = existingImgSibling.querySelector('img');
+                        if (imgTag && imgTag.src) {
+                            previewImg.src = imgTag.src;
+                            previewImg.classList.remove('hidden');
+                            placeholder.classList.add('opacity-0');
+                            existingImgSibling.classList.add('hidden'); // hide the old blade preview
+                        }
+                    }
+
+                    // Click propagation
+                    wrapper.addEventListener('click', (e) => {
+                        if (e.target !== clearBtn) {
+                            input.click();
+                        }
+                    });
+
+                    // Drag Events
+                    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                        wrapper.addEventListener(eventName, preventDefaults, false);
+                    });
+
+                    function preventDefaults(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+
+                    ['dragenter', 'dragover'].forEach(eventName => {
+                        wrapper.addEventListener(eventName, () => {
+                            wrapper.classList.add('border-red-500', 'bg-red-50');
+                            wrapper.classList.remove('border-gray-300', 'bg-gray-50');
+                        }, false);
+                    });
+
+                    ['dragleave', 'drop'].forEach(eventName => {
+                        wrapper.addEventListener(eventName, () => {
+                            wrapper.classList.remove('border-red-500', 'bg-red-50');
+                            wrapper.classList.add('border-gray-300', 'bg-gray-50');
+                        }, false);
+                    });
+
+                    wrapper.addEventListener('drop', (e) => {
+                        let dt = e.dataTransfer;
+                        let files = dt.files;
+                        if (files.length > 0) {
+                            input.files = files; // transfer array
+                            handleFiles(files[0]);
+                        }
+                    }, false);
+
+                    input.addEventListener('change', function () {
+                        if (this.files && this.files[0]) {
+                            handleFiles(this.files[0]);
+                        }
+                    });
+
+                    clearBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        input.value = '';
+                        previewImg.removeAttribute('src');
+                        previewImg.classList.add('hidden');
+                        clearBtn.classList.add('hidden');
+                        fileNameBadge.classList.add('hidden');
+                        placeholder.classList.remove('opacity-0');
+                    });
+
+                    function handleFiles(file) {
+                        if (!file) return;
+
+                        // Set text
+                        fileNameBadge.textContent = file.name;
+                        fileNameBadge.classList.remove('hidden');
+                        clearBtn.classList.remove('hidden');
+
+                        // Check if Image for preview
+                        if (file.type.startsWith('image/')) {
+                            const reader = new FileReader();
+                            reader.onload = (e) => {
+                                previewImg.src = e.target.result;
+                                previewImg.classList.remove('hidden');
+                                placeholder.classList.add('opacity-0');
+                            }
+                            reader.readAsDataURL(file);
+                        } else {
+                            // Non-image icon fallback
+                            previewImg.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239CA3AF"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>';
+                            previewImg.classList.remove('hidden');
+                            placeholder.classList.add('opacity-0');
+                        }
+                    }
+                });
+            }
+
+            // Run on load
+            window.initDragAndDrop();
+</body >
+
+</html >

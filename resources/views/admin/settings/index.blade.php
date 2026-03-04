@@ -333,16 +333,56 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Modo de Manutenção</label>
                             <div
-                                x-data="{ maintenance: {{ ($settings['maintenance_mode'] ?? false) ? 'true' : 'false' }} }">
+                                x-data="{ maintenance: {{ filter_var($settings['maintenance_mode'] ?? false, FILTER_VALIDATE_BOOLEAN) ? 'true' : 'false' }} }">
                                 <button type="button" @click="maintenance = !maintenance"
                                     :class="maintenance ? 'bg-red-600' : 'bg-gray-300'"
                                     class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors">
                                     <span :class="maintenance ? 'translate-x-6' : 'translate-x-1'"
-                                        class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"></span>
+                                        class="inline-block h-4 w-4 transform bg-white rounded-full transition-transform"></span>
                                 </button>
-                                <input type="hidden" name="settings[maintenance_mode]" :value="maintenance ? 1 : 0">
-                                <p class="text-xs text-gray-500 mt-1">Quando ativado, o site exibirá uma página de
-                                    manutenção para visitantes.</p>
+                                <input type="hidden" name="settings[maintenance_mode]" :value="maintenance ? '1' : '0'">
+                                <span class="ml-3 text-sm font-medium text-gray-700"
+                                    x-text="maintenance ? 'Ativado' : 'Desativado'"></span>
+                            </div>
+                        </div>
+
+                        {{-- Configurações do Preloader --}}
+                        <div class="pt-4 mt-6 border-t border-gray-100">
+                            <h4 class="text-md font-semibold text-gray-900 mb-4">Tela de Carregamento (Preloader)</h4>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Ativar Preloader</label>
+                                    <div x-data="{ preloader: {{ filter_var($settings['preloader_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN) ? 'true' : 'false' }} }">
+                                        <button type="button" @click="preloader = !preloader"
+                                            :class="preloader ? 'bg-red-600' : 'bg-gray-300'"
+                                            class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors">
+                                            <span :class="preloader ? 'translate-x-6' : 'translate-x-1'"
+                                                class="inline-block h-4 w-4 transform bg-white rounded-full transition-transform"></span>
+                                        </button>
+                                        <input type="hidden" name="settings[preloader_enabled]" :value="preloader ? '1' : '0'">
+                                        <span class="ml-3 text-sm text-gray-600" x-text="preloader ? 'Ativado no Início do Site' : 'Desligado'"></span>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Cor de Fundo do Preloader</label>
+                                    <input type="color" name="settings[preloader_bg_color]"
+                                        value="{{ old('settings.preloader_bg_color', $settings['preloader_bg_color'] ?? '#ffffff') }}"
+                                        class="w-16 h-10 border border-gray-300 rounded-lg cursor-pointer">
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Logo Animada (GIF, SVG ou PNG)</label>
+                                    <input type="file" name="preloader_image" accept="image/png,image/gif,image/jpeg,image/svg+xml"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-sm file:bg-red-50 file:text-red-600 hover:file:bg-red-100">
+                                    <p class="text-xs text-gray-500 mt-1">Deixe em branco para usar o site_logo cadastrado na aba "Geral".</p>
+                                    @if(!empty($settings['preloader_image']))
+                                        <div class="mt-2 bg-gray-100 w-fit p-3 rounded-lg border border-gray-200">
+                                            <img src="{{ asset('storage/' . $settings['preloader_image']) }}" alt="Preloader Image" class="h-12 object-contain">
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>
