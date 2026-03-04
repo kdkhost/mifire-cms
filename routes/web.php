@@ -97,6 +97,12 @@ Route::get('/fix-storage', function () {
     }
 });
 
+Route::get('/debug-urls', function () {
+    $pages = \App\Models\Page::get(['title', 'slug'])->toArray();
+    $menus = \App\Models\Menu::get(['title', 'url'])->toArray();
+    return response()->json(['pages' => $pages, 'menus' => $menus]);
+});
+
 Route::get('/run-migration', function () {
     try {
         // Força a inclusão do arquivo para evitar erro de classe não encontrada no servidor remoto
@@ -128,5 +134,5 @@ Route::middleware(['track.visit', 'maintenance'])->group(function () {
     Route::get('/produtos/{categorySlug}', [ProductController::class, 'category'])->name('products.category');
     Route::get('/produtos/{categorySlug}/{slug}', [ProductController::class, 'show'])->name('products.show');
 
-    Route::get('/{slug}', [PageController::class, 'show'])->name('page.show'); // catch-all for CMS pages
+    Route::get('/{slug}', [PageController::class, 'show'])->name('page.show')->where('slug', '.*'); // catch-all for CMS pages
 });
