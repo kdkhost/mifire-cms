@@ -76,6 +76,14 @@ npm run dev
 
 ## Histórico de Atualizações
 
+### 2026-03-04 — 12:04
+
+**Correção: Sincronização e Persistência de Configurações**
+
+- **SettingController:** Refatorado para retornar mapeamento direto de chaves para a view. Corrigida falha onde campos ficavam vazios após salvar devido à estrutura de dados agrupada.
+- **Sincronia Admin/Site:** Chaves renomeadas no Admin para baterem com as chaves esperadas no Frontend (`email`, `phone`, `whatsapp`, `theme_color`, etc.).
+- **Gestão Institucional:** Adicionados campos `phone2`, `logo_white` (rodapé), `company_description` e seção de "Sobre a Empresa" (`mission`, `vision`, `values`) no painel.
+
 ### 2026-03-04 — 11:49
 
 **Correção: ViteManifestNotFoundException em produção (erro 500)**
