@@ -76,6 +76,17 @@ npm run dev
 
 ## Histórico de Atualizações
 
+### 2026-03-04 — 13:00
+
+**Arquitetura: Persistência AJAX e Máscaras Globais**
+
+- **Painel Administrativo Fluidizado**: Todas as operações de criação e edição agora utilizam AJAX, proporcionando uma experiência sem recarregamento de página.
+- **Feedback em Tempo Real**: Integração com **SweetAlert2** para notificações de sucesso e erro de forma padronizada.
+- **Sistema de Máscaras Globais**: Implementação do `vanilla-masker` com inicialização automática via atributo `data-mask`.
+  - Suporte a: Telefone (fixo/celular dinâmico), CPF, CNPJ, CEP, Moeda (R$) e Datas.
+  - Re-inicialização automática pós-requisições AJAX garantindo funcionalidade contínua.
+- **Upload Híbrido de Redes Sociais**: Novo sistema que permite escolher entre ícones CSS ou upload de arquivos de imagem no painel de redes sociais.
+
 ### 2026-03-04 — 12:20
 
 **Melhoria: Migração global do painel administrativo para AJAX**
