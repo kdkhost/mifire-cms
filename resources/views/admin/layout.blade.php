@@ -25,6 +25,12 @@
     {{-- Chart.js --}}
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 
+    {{-- jQuery & Summernote (WYSIWYG Editor) --}}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/lang/summernote-pt-BR.min.js"></script>
+
     @stack('styles')
 </head>
 
@@ -93,7 +99,7 @@
                         $isActive = request()->routeIs($item['route'] . '*');
                     @endphp
                     <a href="{{ route($item['route']) }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-150
-                                                                                  {{ $isActive
+                                                                                          {{ $isActive
                 ? 'bg-red-600 text-white shadow-lg shadow-red-600/20'
                 : 'text-gray-400 hover:text-white hover:bg-gray-800' }}">
                         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -105,7 +111,7 @@
                         @if (isset($item['badge']) && isset(${$item['badge']}) && ${$item['badge']} > 0)
                             <span
                                 class="ml-auto inline-flex items-center justify-center w-5 h-5 text-xs font-bold rounded-full
-                                                                                                                         {{ $isActive ? 'bg-white text-red-600' : 'bg-red-600 text-white' }}">
+                                                                                                                                     {{ $isActive ? 'bg-white text-red-600' : 'bg-red-600 text-white' }}">
                                 {{ ${$item['badge']} }}
                             </span>
                         @endif
@@ -549,6 +555,23 @@
                             placeholder.classList.add('opacity-0');
                         }
                     }
+                });
+            }
+
+            // Global Summernote initialization
+            if ($('textarea[name="content"], textarea[name="description"], .summernote').length > 0) {
+                $('textarea[name="content"], textarea[name="description"], .summernote').summernote({
+                    height: 300,
+                    lang: 'pt-BR',
+                    toolbar: [
+                        ['style', ['style']],
+                        ['font', ['bold', 'italic', 'underline', 'clear']],
+                        ['color', ['color']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['table', ['table']],
+                        ['insert', ['link', 'picture', 'video']],
+                        ['view', ['fullscreen', 'codeview', 'help']]
+                    ]
                 });
             }
 

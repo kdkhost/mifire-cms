@@ -191,10 +191,14 @@
                 {{-- Desktop Navigation --}}
                 <nav class="hidden lg:flex items-center gap-1">
                     @foreach($menus as $menu)
+                        @php
+                            $menuUrl = $menu->url ? url($menu->url) : ($menu->page ? route('page.show', $menu->page->slug) : '#');
+                            $isActive = request()->url() === $menuUrl;
+                        @endphp
                         @if($menu->children->count() > 0)
                             <div x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false" class="relative">
-                                <a href="{{ $menu->url ?? ($menu->page ? route('page.show', $menu->page->slug) : '#') }}"
-                                   class="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-700 hover:text-red-600 rounded-lg transition-colors {{ request()->url() === url($menu->url ?? '') ? 'text-red-600' : '' }}"
+                                <a href="{{ $menuUrl }}"
+                                   class="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-700 hover:text-red-600 rounded-lg transition-colors {{ $isActive ? 'text-red-600' : '' }}"
                                 >
                                     {{ $menu->title }}
                                     <svg class="w-4 h-4 transition-transform" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
@@ -211,9 +215,13 @@
                                     class="absolute left-0 top-full mt-1 w-56 bg-white rounded-xl shadow-xl ring-1 ring-gray-100 py-2 z-50"
                                 >
                                     @foreach($menu->children as $child)
-                                        <a href="{{ $child->url ?? ($child->page ? route('page.show', $child->page->slug) : '#') }}"
+                                        @php
+                                            $childUrl = $child->url ? url($child->url) : ($child->page ? route('page.show', $child->page->slug) : '#');
+                                            $isChildActive = request()->url() === $childUrl;
+                                        @endphp
+                                        <a href="{{ $childUrl }}"
                                            target="{{ $child->target ?? '_self' }}"
-                                           class="block px-4 py-2.5 text-sm text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors"
+                                           class="block px-4 py-2.5 text-sm transition-colors {{ $isChildActive ? 'bg-red-50 text-red-600 font-semibold' : 'text-gray-600 hover:bg-red-50 hover:text-red-600' }}"
                                         >
                                             {{ $child->title }}
                                         </a>
@@ -221,9 +229,9 @@
                                 </div>
                             </div>
                         @else
-                            <a href="{{ $menu->url ?? ($menu->page ? route('page.show', $menu->page->slug) : '#') }}"
+                            <a href="{{ $menuUrl }}"
                                target="{{ $menu->target ?? '_self' }}"
-                               class="px-3 py-2 text-sm font-medium text-gray-700 hover:text-red-600 rounded-lg transition-colors {{ request()->url() === url($menu->url ?? '') ? 'text-red-600 font-semibold' : '' }}"
+                               class="px-3 py-2 text-sm font-medium text-gray-700 hover:text-red-600 rounded-lg transition-colors {{ $isActive ? 'text-red-600 font-semibold' : '' }}"
                             >
                                 {{ $menu->title }}
                             </a>
@@ -295,11 +303,15 @@
                 <div class="flex-1 overflow-y-auto py-4 px-2 custom-scrollbar">
                     <nav class="space-y-1">
                         @foreach($menus as $menu)
+                            @php
+                                $menuUrl = $menu->url ? url($menu->url) : ($menu->page ? route('page.show', $menu->page->slug) : '#');
+                                $isActive = request()->url() === $menuUrl;
+                            @endphp
                             @if($menu->children->count() > 0)
                                 <div x-data="{ expanded: false }">
                                     <button 
                                         @click="expanded = !expanded"
-                                        class="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-gray-300 hover:bg-white/5 hover:text-white rounded-xl transition-all"
+                                        class="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-gray-300 hover:bg-white/5 hover:text-white rounded-xl transition-all {{ $isActive ? 'bg-red-600/10 text-red-500' : '' }}"
                                     >
                                         <span class="flex items-center gap-3">
                                             @if($menu->icon) <i class="{{ $menu->icon }} w-4 text-center"></i> @endif
@@ -316,9 +328,13 @@
                                          x-transition:leave-end="opacity-0 -translate-y-2"
                                          class="pl-4 mt-1 space-y-1" x-cloak>
                                         @foreach($menu->children as $child)
+                                            @php
+                                                $childUrl = $child->url ? url($child->url) : ($child->page ? route('page.show', $child->page->slug) : '#');
+                                                $isChildActive = request()->url() === $childUrl;
+                                            @endphp
                                             <a 
-                                                href="{{ $child->url ?? ($child->page ? route('page.show', $child->page->slug) : '#') }}"
-                                                class="block px-4 py-2.5 text-sm text-gray-400 hover:text-red-500 transition-colors"
+                                                href="{{ $childUrl }}"
+                                                class="block px-4 py-2.5 text-sm transition-colors {{ $isChildActive ? 'text-red-500 font-semibold' : 'text-gray-400 hover:text-red-500' }}"
                                                 @click="mobileMenu = false"
                                             >
                                                 {{ $child->title }}
@@ -328,8 +344,8 @@
                                 </div>
                             @else
                                 <a 
-                                    href="{{ $menu->url ?? ($menu->page ? route('page.show', $menu->page->slug) : '#') }}"
-                                    class="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-gray-300 hover:bg-white/5 hover:text-white rounded-xl transition-all {{ request()->url() === url($menu->url ?? '') ? 'bg-red-600/10 text-red-500' : '' }}"
+                                    href="{{ $menuUrl }}"
+                                    class="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-gray-300 hover:bg-white/5 hover:text-white rounded-xl transition-all {{ $isActive ? 'bg-red-600/10 text-red-500' : '' }}"
                                     @click="mobileMenu = false"
                                 >
                                     @if($menu->icon) <i class="{{ $menu->icon }} w-4 text-center"></i> @endif
