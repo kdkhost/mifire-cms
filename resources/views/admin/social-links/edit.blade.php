@@ -62,11 +62,33 @@
                         </div>
 
                         <div x-show="uploadType === 'class'">
-                            <label for="icon" class="block text-sm font-medium text-gray-700 mb-1">Classe do Ícone</label>
-                            <input type="text" name="icon" id="icon" value="{{ old('icon', $socialLink->icon) }}"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                                placeholder="Ex: fab fa-instagram">
-                            <p class="text-xs text-gray-400 mt-1">Classe CSS do ícone (Font Awesome, etc.)</p>
+                            <label for="icon" class="block text-sm font-medium text-gray-700 mb-1">Escolher Ícone</label>
+                            <select name="icon" id="icon"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                                <option value="">Selecione um ícone...</option>
+                                <optgroup label="Redes Sociais">
+                                    <option value="fab fa-facebook" {{ old('icon', $socialLink->icon) === 'fab fa-facebook' ? 'selected' : '' }}>Facebook</option>
+                                    <option value="fab fa-facebook-f" {{ old('icon', $socialLink->icon) === 'fab fa-facebook-f' ? 'selected' : '' }}>Facebook (F)</option>
+                                    <option value="fab fa-instagram" {{ old('icon', $socialLink->icon) === 'fab fa-instagram' ? 'selected' : '' }}>Instagram</option>
+                                    <option value="fab fa-x-twitter" {{ old('icon', $socialLink->icon) === 'fab fa-x-twitter' ? 'selected' : '' }}>X (Twitter)</option>
+                                    <option value="fab fa-twitter" {{ old('icon', $socialLink->icon) === 'fab fa-twitter' ? 'selected' : '' }}>Twitter (Antigo)</option>
+                                    <option value="fab fa-linkedin" {{ old('icon', $socialLink->icon) === 'fab fa-linkedin' ? 'selected' : '' }}>LinkedIn</option>
+                                    <option value="fab fa-linkedin-in" {{ old('icon', $socialLink->icon) === 'fab fa-linkedin-in' ? 'selected' : '' }}>LinkedIn (In)</option>
+                                    <option value="fab fa-youtube" {{ old('icon', $socialLink->icon) === 'fab fa-youtube' ? 'selected' : '' }}>YouTube</option>
+                                    <option value="fab fa-tiktok" {{ old('icon', $socialLink->icon) === 'fab fa-tiktok' ? 'selected' : '' }}>TikTok</option>
+                                    <option value="fab fa-whatsapp" {{ old('icon', $socialLink->icon) === 'fab fa-whatsapp' ? 'selected' : '' }}>WhatsApp</option>
+                                    <option value="fab fa-telegram" {{ old('icon', $socialLink->icon) === 'fab fa-telegram' ? 'selected' : '' }}>Telegram</option>
+                                    <option value="fab fa-pinterest" {{ old('icon', $socialLink->icon) === 'fab fa-pinterest' ? 'selected' : '' }}>Pinterest</option>
+                                    <option value="fab fa-github" {{ old('icon', $socialLink->icon) === 'fab fa-github' ? 'selected' : '' }}>GitHub</option>
+                                </optgroup>
+                                <optgroup label="Institucional">
+                                    <option value="fas fa-envelope" {{ old('icon', $socialLink->icon) === 'fas fa-envelope' ? 'selected' : '' }}>E-mail</option>
+                                    <option value="fas fa-globe" {{ old('icon', $socialLink->icon) === 'fas fa-globe' ? 'selected' : '' }}>Site (Globo)</option>
+                                    <option value="fas fa-phone" {{ old('icon', $socialLink->icon) === 'fas fa-phone' ? 'selected' : '' }}>Telefone</option>
+                                    <option value="fas fa-map-marker-alt" {{ old('icon', $socialLink->icon) === 'fas fa-map-marker-alt' ? 'selected' : '' }}>Localização</option>
+                                </optgroup>
+                            </select>
+                            <p class="text-xs text-gray-400 mt-1">Selecione o ícone pré-definido para esta plataforma</p>
                         </div>
 
                         <div x-show="uploadType === 'file'" x-cloak>
