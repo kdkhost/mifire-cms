@@ -86,28 +86,6 @@ Route::get('/sw.js', [PwaController::class, 'serviceWorker']);
 
 Route::get('/sitemap.xml', [SitemapController::class, 'index']);
 
-// ── Frontend Routes (with visit tracking + maintenance middleware) ──────
-
-Route::middleware(['track.visit', 'maintenance'])->group(function () {
-    Route::get('/', [HomeController::class, 'index'])->name('home');
-
-    Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
-    Route::get('/blog/categoria/{slug}', [BlogController::class, 'category'])->name('blog.category');
-    Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
-
-    Route::get('/downloads', [DownloadController::class, 'index'])->name('downloads.index');
-    Route::get('/downloads/{id}', [DownloadController::class, 'download'])->name('downloads.download');
-
-    Route::get('/contato', [ContactController::class, 'index'])->name('contact.index');
-    Route::post('/contato', [ContactController::class, 'store'])->name('contact.store');
-
-    Route::get('/produtos', [ProductController::class, 'index'])->name('products.index');
-    Route::get('/produtos/{categorySlug}', [ProductController::class, 'category'])->name('products.category');
-    Route::get('/produtos/{categorySlug}/{slug}', [ProductController::class, 'show'])->name('products.show');
-
-    Route::get('/{slug}', [PageController::class, 'show'])->name('page.show'); // catch-all for CMS pages
-});
-
 // ── Utility Routes ────────────────────────────────────────
 
 Route::get('/fix-storage', function () {
@@ -129,4 +107,26 @@ Route::get('/run-migration', function () {
     } catch (\Exception $e) {
         return "Erro ao rodar migração: " . $e->getMessage();
     }
+});
+
+// ── Frontend Routes (with visit tracking + maintenance middleware) ──────
+
+Route::middleware(['track.visit', 'maintenance'])->group(function () {
+    Route::get('/', [HomeController::class, 'index'])->name('home');
+
+    Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+    Route::get('/blog/categoria/{slug}', [BlogController::class, 'category'])->name('blog.category');
+    Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
+
+    Route::get('/downloads', [DownloadController::class, 'index'])->name('downloads.index');
+    Route::get('/downloads/{id}', [DownloadController::class, 'download'])->name('downloads.download');
+
+    Route::get('/contato', [ContactController::class, 'index'])->name('contact.index');
+    Route::post('/contato', [ContactController::class, 'store'])->name('contact.store');
+
+    Route::get('/produtos', [ProductController::class, 'index'])->name('products.index');
+    Route::get('/produtos/{categorySlug}', [ProductController::class, 'category'])->name('products.category');
+    Route::get('/produtos/{categorySlug}/{slug}', [ProductController::class, 'show'])->name('products.show');
+
+    Route::get('/{slug}', [PageController::class, 'show'])->name('page.show'); // catch-all for CMS pages
 });
