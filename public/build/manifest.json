@@ -1,0 +1,25 @@
+{
+  "_alpine-CwKKyv8g.js": {
+    "file": "assets/alpine-CwKKyv8g.js",
+    "name": "alpine"
+  },
+  "_sweetalert-Cj9UHshf.js": {
+    "file": "assets/sweetalert-Cj9UHshf.js",
+    "name": "sweetalert"
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-D5h5Hi6r.css",
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-CjKAGrje.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "imports": [
+      "_alpine-CwKKyv8g.js",
+      "_sweetalert-Cj9UHshf.js"
+    ]
+  }
+}
