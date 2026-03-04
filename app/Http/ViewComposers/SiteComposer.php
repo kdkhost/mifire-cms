@@ -17,9 +17,9 @@ class SiteComposer
     {
         // Main menu items with children (header)
         $menus = Menu::active()
-            ->byLocation('header')
+            ->byLocation('main')
             ->whereNull('parent_id')
-            ->with(['children' => fn ($q) => $q->active()->orderBy('sort_order'), 'page'])
+            ->with(['children' => fn($q) => $q->active()->orderBy('sort_order'), 'page'])
             ->orderBy('sort_order')
             ->get();
 
@@ -27,7 +27,7 @@ class SiteComposer
         $footerMenus = Menu::active()
             ->byLocation('footer')
             ->whereNull('parent_id')
-            ->with(['children' => fn ($q) => $q->active()->orderBy('sort_order'), 'page'])
+            ->with(['children' => fn($q) => $q->active()->orderBy('sort_order'), 'page'])
             ->orderBy('sort_order')
             ->get();
 

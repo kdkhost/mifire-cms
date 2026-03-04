@@ -212,53 +212,60 @@
             </div>
         </div>
 
-        {{-- Mobile Navigation --}}
-        <div
-            x-show="mobileMenu"
-            x-transition:enter="transition ease-out duration-300"
-            x-transition:enter-start="opacity-0 -translate-y-4"
-            x-transition:enter-end="opacity-100 translate-y-0"
-            x-transition:leave="transition ease-in duration-200"
-            x-transition:leave-start="opacity-100 translate-y-0"
-            x-transition:leave-end="opacity-0 -translate-y-4"
+        {{-- Sidebar Mobile (Android Style) --}}
+        <div 
+            x-show="mobileMenu" 
+            class="fixed inset-0 z-[100] lg:hidden" 
             x-cloak
-            class="lg:hidden border-t border-gray-100 bg-white shadow-xl"
         >
-            <div class="max-w-7xl mx-auto px-4 py-4 space-y-1">
-                @foreach($menus as $menu)
-                    @if($menu->children->count() > 0)
-                        <div x-data="{ subOpen: false }">
-                            <button @click="subOpen = !subOpen" class="flex items-center justify-between w-full px-4 py-3 text-sm font-medium text-gray-700 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors">
-                                {{ $menu->title }}
-                                <svg class="w-4 h-4 transition-transform" :class="subOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                            </button>
-                            <div x-show="subOpen" x-collapse x-cloak class="ml-4 space-y-1">
-                                @foreach($menu->children as $child)
-                                    <a href="{{ $child->url ?? ($child->page ? route('page.show', $child->page->slug) : '#') }}"
-                                       class="block px-4 py-2.5 text-sm text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                       @click="mobileMenu = false"
-                                    >
-                                        {{ $child->title }}
-                                    </a>
-                                @endforeach
-                            </div>
-                        </div>
-                    @else
-                        <a href="{{ $menu->url ?? ($menu->page ? route('page.show', $menu->page->slug) : '#') }}"
-                           class="block px-4 py-3 text-sm font-medium text-gray-700 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors {{ request()->url() === url($menu->url ?? '') ? 'text-red-600 bg-red-50' : '' }}"
-                           @click="mobileMenu = false"
-                        >
-                            {{ $menu->title }}
-                        </a>
-                    @endif
-                @endforeach
+            {{-- Backdrop --}}
+            <div 
+                x-show="mobileMenu"
+                x-transition:enter="transition-opacity ease-linear duration-300"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition-opacity ease-linear duration-200"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="fixed inset-0 bg-black/60 backdrop-blur-sm"
+                @click="mobileMenu = false"
+            ></div>
 
-                <div class="pt-3 border-t border-gray-100">
-                    <a href="{{ route('contact.index') }}" class="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-5 py-3 rounded-lg transition-all">
-                        Solicitar Orçamento
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+            {{-- Drawer Content --}}
+            <div 
+                x-show="mobileMenu"
+                x-transition:enter="transition-transform ease-in-out duration-300"
+                x-transition:enter-start="-translate-x-full"
+                x-transition:enter-end="translate-x-0"
+                x-transition:leave="transition-transform ease-in-out duration-300"
+                x-transition:leave-start="translate-x-0"
+                x-transition:leave-end="-translate-x-full"
+                class="fixed inset-y-0 left-0 w-[280px] bg-gray-950 shadow-2xl flex flex-col z-[101]"
+            >
+                {{-- Sidebar Header --}}
+                <div class="p-6 border-b border-white/5 flex items-center justify-between">
+                    <a href="{{ route('home') }}" class="flex-shrink-0">
+                        @if($settings->get('logo_white'))
+                            <img src="{{ asset('storage/' . $settings->get('logo_white')) }}" alt="MiFire" class="h-8 w-auto">
+                        @else
+                            <span class="text-white font-black text-xl">Mi<span class="text-red-600">Fire</span></span>
+                        @endif
                     </a>
+                    <button @click="mobileMenu = false" class="text-gray-400 hover:text-white p-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
                 </div>
+
+                {{-- Sidebar Links --}}
+                <div class="flex-1 overflow-y-auto py-4 px-2 custom-scrollbar">
+                    <nav class="space-y-1">
+                        @foreach($menus as $menu)
+                            @if($menu->children->count() > 0)
+                                <div x-data="{ expanded: false }">
+                                    <button 
+                                        @click="expanded = !expanded"
+                                        class="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-gray-300 hover:bg-white/5 hover:text-white rounded-xl transition-all"
+                                    >
 
                 {{-- Mobile contact info --}}
                 <div class="pt-3 border-t border-gray-100 space-y-2">
@@ -352,31 +359,58 @@
                 <div>
                     <h3 class="text-white font-bold text-lg mb-6 uppercase tracking-widest text-gray-400">Fale Conosco</h3>
                     <div class="space-y-6 text-sm">
-                        @foreach($contactDepts as $dept)
+                        @if(count($contactDepts) > 0)
+                            @foreach($contactDepts as $dept)
+                                <div class="space-y-2">
+                                    <h4 class="text-white font-bold mb-2 uppercase">{{ $dept['name'] }}</h4>
+                                    <div class="space-y-1.5 text-gray-300">
+                                        @if(isset($dept['phones']) && $dept['phones'])
+                                            <div class="flex items-start gap-3">
+                                                <i class="fas fa-phone text-red-600 mt-1"></i>
+                                                <span class="text-[13px] tracking-wider">{{ $dept['phones'] }}</span>
+                                            </div>
+                                        @endif
+                                        @if(isset($dept['whatsapp']) && $dept['whatsapp'])
+                                            <div class="flex items-start gap-3">
+                                                <i class="fab fa-whatsapp text-green-500 mt-1"></i>
+                                                <a href="https://wa.me/{{ preg_replace('/\D/', '', $dept['whatsapp']) }}" target="_blank" class="hover:text-white transition-colors text-[13px]">{{ $dept['whatsapp'] }}</a>
+                                            </div>
+                                        @endif
+                                        @if(isset($dept['email']) && $dept['email'])
+                                            <div class="flex items-start gap-3 mt-1">
+                                                <i class="fas fa-envelope text-red-600 mt-1"></i>
+                                                <a href="mailto:{{ $dept['email'] }}" class="hover:text-white transition-colors text-[11px] uppercase tracking-wide truncate max-w-[180px]">{{ $dept['email'] }}</a>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        @else
+                            {{-- Fallback: Contatos Globais --}}
                             <div class="space-y-2">
-                                <h4 class="text-white font-bold mb-2 uppercase">{{ $dept['name'] }}</h4>
+                                <h4 class="text-white font-bold mb-2 uppercase">Atendimento</h4>
                                 <div class="space-y-1.5 text-gray-300">
-                                    @if(isset($dept['phones']) && $dept['phones'])
+                                    @if($settings->get('phone'))
                                         <div class="flex items-start gap-3">
                                             <i class="fas fa-phone text-red-600 mt-1"></i>
-                                            <span class="text-[13px] tracking-wider">{{ $dept['phones'] }}</span>
+                                            <span class="text-[13px] tracking-wider">{{ $settings->get('phone') }}</span>
                                         </div>
                                     @endif
-                                    @if(isset($dept['whatsapp']) && $dept['whatsapp'])
+                                    @if($settings->get('whatsapp'))
                                         <div class="flex items-start gap-3">
                                             <i class="fab fa-whatsapp text-green-500 mt-1"></i>
-                                            <a href="https://wa.me/{{ preg_replace('/\D/', '', $dept['whatsapp']) }}" target="_blank" class="hover:text-white transition-colors text-[13px]">{{ $dept['whatsapp'] }}</a>
+                                            <a href="https://wa.me/{{ preg_replace('/\D/', '', $settings->get('whatsapp')) }}" target="_blank" class="hover:text-white transition-colors text-[13px]">{{ $settings->get('whatsapp') }}</a>
                                         </div>
                                     @endif
-                                    @if(isset($dept['email']) && $dept['email'])
+                                    @if($settings->get('email'))
                                         <div class="flex items-start gap-3 mt-1">
                                             <i class="fas fa-envelope text-red-600 mt-1"></i>
-                                            <a href="mailto:{{ $dept['email'] }}" class="hover:text-white transition-colors text-[11px] uppercase tracking-wide truncate max-w-[180px]">{{ $dept['email'] }}</a>
+                                            <a href="mailto:{{ $settings->get('email') }}" class="hover:text-white transition-colors text-[11px] uppercase tracking-wide truncate max-w-[180px]">{{ $settings->get('email') }}</a>
                                         </div>
                                     @endif
                                 </div>
                             </div>
-                        @endforeach
+                        @endif
                     </div>
                 </div>
 
