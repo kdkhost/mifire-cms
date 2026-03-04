@@ -33,7 +33,7 @@
             </nav>
         </div>
 
-        <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data" class="ajax-form">
             @csrf
             <div class="max-w-3xl">
                 {{-- GERAL --}}
@@ -205,15 +205,17 @@
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500">
                         </div>
                         <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Cor do Tema</label>
-                        <input type="color" name="settings[theme_color]" value="{{ old('settings.theme_color', $settings['theme_color'] ?? '#dc2626') }}"
-                               class="w-16 h-10 border border-gray-300 rounded-lg cursor-pointer">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Cor de Fundo</label>
-                        <input type="color" name="settings[background_color]" value="{{ old('settings.background_color', $settings['background_color'] ?? '#ffffff') }}"
-                               class="w-16 h-10 border border-gray-300 rounded-lg cursor-pointer">
-                    </div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Cor do Tema</label>
+                            <input type="color" name="settings[theme_color]"
+                                value="{{ old('settings.theme_color', $settings['theme_color'] ?? '#dc2626') }}"
+                                class="w-16 h-10 border border-gray-300 rounded-lg cursor-pointer">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Cor de Fundo</label>
+                            <input type="color" name="settings[background_color]"
+                                value="{{ old('settings.background_color', $settings['background_color'] ?? '#ffffff') }}"
+                                class="w-16 h-10 border border-gray-300 rounded-lg cursor-pointer">
+                        </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Ícone 192x192</label>
                             <input type="file" name="pwa_icon_192" accept="image/png"

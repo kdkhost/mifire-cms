@@ -33,10 +33,10 @@ class BrandController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name'       => ['required', 'string', 'max:255'],
-            'logo'       => ['nullable', 'image', 'max:2048'],
-            'url'        => ['nullable', 'url', 'max:500'],
-            'is_active'  => ['boolean'],
+            'name' => ['required', 'string', 'max:255'],
+            'logo' => ['nullable', 'image', 'max:2048'],
+            'url' => ['nullable', 'url', 'max:500'],
+            'is_active' => ['boolean'],
             'sort_order' => ['nullable', 'integer'],
         ]);
 
@@ -45,10 +45,18 @@ class BrandController extends Controller
                 ->store('brands', 'public');
         }
 
-        $validated['is_active']  = $request->boolean('is_active');
+        $validated['is_active'] = $request->boolean('is_active');
         $validated['sort_order'] = $validated['sort_order'] ?? 0;
 
         Brand::create($validated);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Marca criada com sucesso.',
+                'redirect' => route('admin.brands.index')
+            ]);
+        }
 
         return redirect()->route('admin.brands.index')
             ->with('success', 'Marca criada com sucesso.');
@@ -68,10 +76,10 @@ class BrandController extends Controller
     public function update(Request $request, Brand $brand)
     {
         $validated = $request->validate([
-            'name'       => ['required', 'string', 'max:255'],
-            'logo'       => ['nullable', 'image', 'max:2048'],
-            'url'        => ['nullable', 'url', 'max:500'],
-            'is_active'  => ['boolean'],
+            'name' => ['required', 'string', 'max:255'],
+            'logo' => ['nullable', 'image', 'max:2048'],
+            'url' => ['nullable', 'url', 'max:500'],
+            'is_active' => ['boolean'],
             'sort_order' => ['nullable', 'integer'],
         ]);
 
@@ -83,10 +91,18 @@ class BrandController extends Controller
                 ->store('brands', 'public');
         }
 
-        $validated['is_active']  = $request->boolean('is_active');
+        $validated['is_active'] = $request->boolean('is_active');
         $validated['sort_order'] = $validated['sort_order'] ?? $brand->sort_order;
 
         $brand->update($validated);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Marca atualizada com sucesso.',
+                'redirect' => route('admin.brands.index')
+            ]);
+        }
 
         return redirect()->route('admin.brands.index')
             ->with('success', 'Marca atualizada com sucesso.');
@@ -113,8 +129,8 @@ class BrandController extends Controller
     public function updateOrder(Request $request)
     {
         $request->validate([
-            'items'         => ['required', 'array'],
-            'items.*.id'    => ['required', 'exists:brands,id'],
+            'items' => ['required', 'array'],
+            'items.*.id' => ['required', 'exists:brands,id'],
             'items.*.order' => ['required', 'integer'],
         ]);
 

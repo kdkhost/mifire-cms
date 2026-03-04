@@ -79,6 +79,14 @@ class BlogPostController extends Controller
 
         BlogPost::create($validated);
 
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Post criado com sucesso.',
+                'redirect' => route('admin.blog.index')
+            ]);
+        }
+
         return redirect()->route('admin.blog.index')
             ->with('success', 'Post criado com sucesso.');
     }
@@ -129,6 +137,14 @@ class BlogPostController extends Controller
         }
 
         $blog->update($validated);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Post atualizado com sucesso.',
+                'redirect' => route('admin.blog.index')
+            ]);
+        }
 
         return redirect()->route('admin.blog.index')
             ->with('success', 'Post atualizado com sucesso.');

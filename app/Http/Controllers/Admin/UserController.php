@@ -36,11 +36,11 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name'     => ['required', 'string', 'max:255'],
-            'email'    => ['required', 'email', 'max:255', 'unique:users,email'],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'phone'    => ['nullable', 'string', 'max:20'],
-            'avatar'   => ['nullable', 'image', 'max:2048'],
+            'phone' => ['nullable', 'string', 'max:20'],
+            'avatar' => ['nullable', 'image', 'max:2048'],
             'is_active' => ['boolean'],
         ]);
 
@@ -49,11 +49,19 @@ class UserController extends Controller
                 ->store('avatars', 'public');
         }
 
-        $validated['password']  = Hash::make($validated['password']);
-        $validated['is_admin']  = true;
+        $validated['password'] = Hash::make($validated['password']);
+        $validated['is_admin'] = true;
         $validated['is_active'] = $request->boolean('is_active');
 
         User::create($validated);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Usuário criado com sucesso.',
+                'redirect' => route('admin.users.index')
+            ]);
+        }
 
         return redirect()->route('admin.users.index')
             ->with('success', 'Usuário criado com sucesso.');
@@ -73,10 +81,10 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $validated = $request->validate([
-            'name'     => ['required', 'string', 'max:255'],
-            'email'    => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'phone'    => ['nullable', 'string', 'max:20'],
-            'avatar'   => ['nullable', 'image', 'max:2048'],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
+            'phone' => ['nullable', 'string', 'max:20'],
+            'avatar' => ['nullable', 'image', 'max:2048'],
             'is_active' => ['boolean'],
         ]);
 
@@ -91,6 +99,14 @@ class UserController extends Controller
         $validated['is_active'] = $request->boolean('is_active');
 
         $user->update($validated);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Usuário atualizado com sucesso.',
+                'redirect' => route('admin.users.index')
+            ]);
+        }
 
         return redirect()->route('admin.users.index')
             ->with('success', 'Usuário atualizado com sucesso.');
@@ -108,6 +124,13 @@ class UserController extends Controller
         $user->update([
             'password' => Hash::make($validated['password']),
         ]);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Senha alterada com sucesso.'
+            ]);
+        }
 
         return redirect()->route('admin.users.edit', $user)
             ->with('success', 'Senha alterada com sucesso.');

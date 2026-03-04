@@ -62,6 +62,13 @@ class SettingController extends Controller
             Setting::set($key, $value ?? '', $group);
         }
 
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Configurações atualizadas com sucesso.'
+            ]);
+        }
+
         return redirect()->route('admin.settings.index')
             ->with('success', 'Configurações salvas com sucesso.');
     }

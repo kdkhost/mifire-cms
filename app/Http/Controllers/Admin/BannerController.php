@@ -33,26 +33,42 @@ class BannerController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title'       => ['required', 'string', 'max:255'],
-            'subtitle'    => ['nullable', 'string', 'max:255'],
+            'title' => ['required', 'string', 'max:255'],
+            'subtitle' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'image'       => ['required', 'image', 'max:4096'],
+            'image' => ['required', 'image', 'max:4096'],
             'button_text' => ['nullable', 'string', 'max:100'],
-            'button_url'  => ['nullable', 'string', 'max:500'],
-            'is_active'   => ['boolean'],
-            'sort_order'  => ['nullable', 'integer'],
+            'button_url' => ['nullable', 'string', 'max:500'],
+            'is_active' => ['boolean'],
+            'sort_order' => ['nullable', 'integer'],
         ]);
 
         $validated['image'] = $request->file('image')
             ->store('banners', 'public');
 
-        $validated['is_active']  = $request->boolean('is_active');
+        $validated['is_active'] = $request->boolean('is_active');
         $validated['sort_order'] = $validated['sort_order'] ?? 0;
 
         Banner::create($validated);
 
-        return redirect()->route('admin.banners.index')
-            ->with('success', 'Banner criado com sucesso.');
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Banner criado com sucesso.',
+                'redirect' => route('admin.banners.index')
+            ]);
+        }
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Categoria criada com sucesso.',
+                'redirect' => route('admin.categories.index')
+            ]);
+        }
+
+        return redirect()->route('admin.categories.index')
+            ->with('success', 'Categoria criada com sucesso.');
     }
 
     /**
@@ -69,14 +85,14 @@ class BannerController extends Controller
     public function update(Request $request, Banner $banner)
     {
         $validated = $request->validate([
-            'title'       => ['required', 'string', 'max:255'],
-            'subtitle'    => ['nullable', 'string', 'max:255'],
+            'title' => ['required', 'string', 'max:255'],
+            'subtitle' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'image'       => ['nullable', 'image', 'max:4096'],
+            'image' => ['nullable', 'image', 'max:4096'],
             'button_text' => ['nullable', 'string', 'max:100'],
-            'button_url'  => ['nullable', 'string', 'max:500'],
-            'is_active'   => ['boolean'],
-            'sort_order'  => ['nullable', 'integer'],
+            'button_url' => ['nullable', 'string', 'max:500'],
+            'is_active' => ['boolean'],
+            'sort_order' => ['nullable', 'integer'],
         ]);
 
         if ($request->hasFile('image')) {
@@ -87,13 +103,29 @@ class BannerController extends Controller
                 ->store('banners', 'public');
         }
 
-        $validated['is_active']  = $request->boolean('is_active');
+        $validated['is_active'] = $request->boolean('is_active');
         $validated['sort_order'] = $validated['sort_order'] ?? $banner->sort_order;
 
         $banner->update($validated);
 
-        return redirect()->route('admin.banners.index')
-            ->with('success', 'Banner atualizado com sucesso.');
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Banner atualizado com sucesso.',
+                'redirect' => route('admin.banners.index')
+            ]);
+        }
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Categoria atualizada com sucesso.',
+                'redirect' => route('admin.categories.index')
+            ]);
+        }
+
+        return redirect()->route('admin.categories.index')
+            ->with('success', 'Categoria atualizada com sucesso.');
     }
 
     /**
@@ -117,8 +149,8 @@ class BannerController extends Controller
     public function updateOrder(Request $request)
     {
         $request->validate([
-            'items'         => ['required', 'array'],
-            'items.*.id'    => ['required', 'exists:banners,id'],
+            'items' => ['required', 'array'],
+            'items.*.id' => ['required', 'exists:banners,id'],
             'items.*.order' => ['required', 'integer'],
         ]);
 

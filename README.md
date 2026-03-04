@@ -76,6 +76,14 @@ npm run dev
 
 ## Histórico de Atualizações
 
+### 2026-03-04 — 12:20
+
+**Melhoria: Migração global do painel administrativo para AJAX**
+
+- Implementação de handler global para requisições AJAX.
+- Integração com SweetAlert2 para feedback visual.
+- Refatoração de todos os controllers e views (Configurações, Blog, Produtos, Usuários, Páginas, Banners, Marcas, etc) para uma experiência sem recarregamento de página.
+
 ### 2026-03-04 — 12:04
 
 **Correção: Sincronização e Persistência de Configurações**
