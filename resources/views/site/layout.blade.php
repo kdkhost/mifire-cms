@@ -287,7 +287,7 @@
     {{-- ═══ FOOTER ═══ --}}
     <footer class="bg-gray-900 text-gray-300">
         <div class="max-w-7xl mx-auto px-4 py-16">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-20 mb-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
                 {{-- Col 1: Logo e Texto --}}
                 <div class="space-y-6">
                     <a href="{{ route('home') }}" class="inline-block transform hover:scale-105 transition-transform duration-300">
@@ -299,9 +299,20 @@
                             </span>
                         @endif
                     </a>
-                    <p class="text-sm leading-relaxed text-gray-400 max-w-sm">
+                    <p class="text-sm leading-relaxed text-gray-400">
                         {{ $settings->get('company_description', 'Soluções completas em segurança contra incêndio e equipamentos de combate a incêndios. Qualidade, confiança e inovação para proteger vidas e patrimônios.') }}
                     </p>
+                    <div class="flex items-center gap-3 pt-2">
+                        @foreach($socialLinks as $social)
+                            <a href="{{ $social->url }}" target="_blank" rel="noopener noreferrer"
+                               class="w-9 h-9 bg-gray-800 hover:bg-red-600 rounded-lg flex items-center justify-center transition-all duration-200 group"
+                               title="{{ $social->platform }}">
+                                @if($social->icon)
+                                    <i class="{{ $social->icon }} text-lg opacity-70 group-hover:opacity-100"></i>
+                                @endif
+                            </a>
+                        @endforeach
+                    </div>
                 </div>
 
                 {{-- Col 2: Endereços --}}
@@ -324,12 +335,12 @@
                                 </p>
                                 @if($address->phone)
                                     <div class="text-red-500 font-bold mt-2">
-                                        Tel.: {{ $address->phone }}
+                                        {{ $address->phone }}
                                     </div>
                                 @endif
                                 @if($address->phone2)
                                     <div class="text-red-500 font-bold">
-                                        Tel.: {{ $address->phone2 }}
+                                        {{ $address->phone2 }}
                                     </div>
                                 @endif
                             </div>
@@ -346,21 +357,21 @@
                                 <h4 class="text-white font-bold mb-2 uppercase">{{ $dept['name'] }}</h4>
                                 <div class="space-y-1.5 text-gray-300">
                                     @if(isset($dept['phones']) && $dept['phones'])
-                                        <div class="flex items-start gap-2">
-                                            <span class="font-bold text-white text-[11px] mt-0.5">TEL:</span>
+                                        <div class="flex items-start gap-3">
+                                            <i class="fas fa-phone text-red-600 mt-1"></i>
                                             <span class="text-[13px] tracking-wider">{{ $dept['phones'] }}</span>
                                         </div>
                                     @endif
                                     @if(isset($dept['whatsapp']) && $dept['whatsapp'])
-                                        <div class="flex items-center gap-2">
-                                            <i class="fab fa-whatsapp text-green-500 text-base"></i>
+                                        <div class="flex items-start gap-3">
+                                            <i class="fab fa-whatsapp text-green-500 mt-1"></i>
                                             <a href="https://wa.me/{{ preg_replace('/\D/', '', $dept['whatsapp']) }}" target="_blank" class="hover:text-white transition-colors text-[13px]">{{ $dept['whatsapp'] }}</a>
                                         </div>
                                     @endif
                                     @if(isset($dept['email']) && $dept['email'])
-                                        <div class="flex items-start gap-2 mt-1">
-                                            <span class="font-bold text-white text-[11px] mt-0.5 uppercase">Email:</span>
-                                            <a href="mailto:{{ $dept['email'] }}" class="hover:text-white transition-colors text-[11px] uppercase tracking-wide">{{ $dept['email'] }}</a>
+                                        <div class="flex items-start gap-3 mt-1">
+                                            <i class="fas fa-envelope text-red-600 mt-1"></i>
+                                            <a href="mailto:{{ $dept['email'] }}" class="hover:text-white transition-colors text-[11px] uppercase tracking-wide truncate max-w-[180px]">{{ $dept['email'] }}</a>
                                         </div>
                                     @endif
                                 </div>
@@ -368,48 +379,33 @@
                         @endforeach
                     </div>
                 </div>
+
+                {{-- Col 4: Links Rápidos --}}
+                <div>
+                    <h3 class="text-white font-bold text-lg mb-6 uppercase tracking-widest text-gray-400">Links Rápidos</h3>
+                    <ul class="space-y-3 text-sm">
+                        @foreach($footerMenus as $fMenu)
+                            <li><a href="{{ $fMenu->url ?? ($fMenu->page ? route('page.show', $fMenu->page->slug) : '#') }}" class="text-gray-400 hover:text-white transition-colors">{{ $fMenu->title }}</a></li>
+                        @endforeach
+                        <li><a href="{{ route('products.index') }}" class="text-gray-400 hover:text-white transition-colors">Produtos</a></li>
+                        <li><a href="{{ route('blog.index') }}" class="text-gray-400 hover:text-white transition-colors">Blog</a></li>
+                        <li><a href="{{ route('downloads.index') }}" class="text-gray-400 hover:text-white transition-colors">Downloads</a></li>
+                        <li><a href="{{ route('contact.index') }}" class="text-gray-400 hover:text-white transition-colors">Contato</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
 
         {{-- Copyright Bar --}}
-        <div class="border-t border-gray-800 bg-black/30">
-            <div class="max-w-7xl mx-auto px-4 py-8 flex flex-col lg:flex-row items-center justify-between gap-8">
-                {{-- Copyright --}}
-                <div class="order-3 lg:order-1 text-center lg:text-left">
-                    <p class="text-xs text-gray-500">&copy; {{ date('Y') }} MiFire. Todos os direitos reservados.</p>
-                    <p class="text-[10px] text-gray-600 mt-1">
-                        Desenvolvido por
-                        <a href="https://kdkhost.com.br" target="_blank" rel="noopener noreferrer" class="text-red-900 hover:text-red-700 transition-colors font-medium">
-                            George Marcelo - KDKHost Soluções
-                        </a>
-                    </p>
-                </div>
-
-                {{-- Social Icons no Centro --}}
-                <div class="order-1 lg:order-2 flex items-center gap-6">
-                    @foreach($socialLinks as $social)
-                        <a href="{{ $social->url }}" target="_blank" rel="noopener noreferrer"
-                           class="text-gray-500 hover:text-white transition-all duration-300 transform hover:scale-125"
-                           title="{{ $social->platform }}">
-                            @if($social->icon)
-                                <i class="{{ $social->icon }} text-xl"></i>
-                            @endif
-                        </a>
-                    @endforeach
-                </div>
-
-                {{-- Links Rápidos Horizontal --}}
-                <div class="order-2 lg:order-3">
-                    <ul class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-[11px] font-bold uppercase tracking-widest text-gray-500">
-                        @foreach($footerMenus as $fMenu)
-                            <li><a href="{{ $fMenu->url ?? ($fMenu->page ? route('page.show', $fMenu->page->slug) : '#') }}" class="hover:text-white transition-colors">{{ $fMenu->title }}</a></li>
-                        @endforeach
-                        <li><a href="{{ route('products.index') }}" class="hover:text-white transition-colors">Produtos</a></li>
-                        <li><a href="{{ route('blog.index') }}" class="hover:text-white transition-colors">Blog</a></li>
-                        <li><a href="{{ route('downloads.index') }}" class="hover:text-white transition-colors">Downloads</a></li>
-                        <li><a href="{{ route('contact.index') }}" class="hover:text-white transition-colors">Contato</a></li>
-                    </ul>
-                </div>
+        <div class="border-t border-gray-800 bg-black/10">
+            <div class="max-w-7xl mx-auto px-4 py-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-500">
+                <p>&copy; {{ date('Y') }} MiFire. Todos os direitos reservados.</p>
+                <p>
+                    Desenvolvido por
+                    <a href="https://kdkhost.com.br" target="_blank" rel="noopener noreferrer" class="text-red-900 hover:text-red-700 transition-colors font-medium">
+                        George Marcelo - KDKHost Soluções
+                    </a>
+                </p>
             </div>
         </div>
     </footer>
