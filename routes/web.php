@@ -105,3 +105,15 @@ Route::middleware(['track.visit'])->group(function () {
 
     Route::get('/{slug}', [PageController::class, 'show'])->name('page.show'); // catch-all for CMS pages
 });
+
+// ── Utility Routes ────────────────────────────────────────
+
+Route::get('/fix-storage', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('storage:link');
+        return "Link simbólico criado com sucesso!";
+    } catch (\Exception $e) {
+        return "Erro ao criar link simbólico: " . $e->getMessage();
+    }
+});
+
