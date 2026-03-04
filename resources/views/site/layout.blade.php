@@ -371,28 +371,28 @@
                 {{-- Col 3: Fale Conosco (Departamentos dinâmicos) --}}
                 <div>
                     <h3 class="text-white font-bold text-lg mb-4">Fale Conosco</h3>
-                    <div class="space-y-6 text-sm">
+                    <div class="space-y-4 text-sm">
                         {{-- Departamentos cadastrados em Endereços --}}
                         @foreach($contactDepartments as $dept)
-                            <div class="bg-white/5 p-4 rounded-xl border border-white/10">
-                                <h4 class="text-white font-bold mb-2 uppercase">{{ $dept->label }}</h4>
-                                <div class="space-y-2 text-gray-400">
+                            <div class="border border-gray-700 p-4 rounded-sm bg-[#222222]/50">
+                                <h4 class="text-white font-bold mb-3 uppercase tracking-wider border-b border-gray-700 pb-2">{{ $dept->label }}</h4>
+                                <div class="space-y-2 text-gray-300">
                                     @if($dept->phone)
                                         <div class="flex items-center gap-2">
-                                            <span class="text-xs font-bold text-white">TEL:</span>
-                                            <a href="tel:{{ $dept->phone }}" class="hover:text-white transition-colors">{{ $dept->phone }}</a>
+                                            <span class="font-bold text-white text-[11px]">TEL:</span>
+                                            <span class="text-[13px]">{{ $dept->phone }}</span>
                                         </div>
                                     @endif
                                     @if($dept->phone2)
                                         <div class="flex items-center gap-2">
-                                            <i class="fab fa-whatsapp text-green-500"></i>
-                                            <a href="https://wa.me/{{ preg_replace('/\D/', '', $dept->phone2) }}" target="_blank" class="hover:text-white transition-colors">{{ $dept->phone2 }}</a>
+                                            <i class="fab fa-whatsapp text-green-500 text-base"></i>
+                                            <a href="https://wa.me/{{ preg_replace('/\D/', '', $dept->phone2) }}" target="_blank" class="hover:text-white transition-colors text-[13px]">{{ $dept->phone2 }}</a>
                                         </div>
                                     @endif
                                     @if($dept->complement) {{-- Usando complemento como e-mail --}}
-                                        <div class="flex items-center gap-2">
-                                            <i class="fas fa-envelope text-red-500"></i>
-                                            <a href="mailto:{{ $dept->complement }}" class="hover:text-white transition-colors text-xs truncate">{{ $dept->complement }}</a>
+                                        <div class="flex items-center gap-2 mt-1">
+                                            <span class="font-bold text-white text-[11px]">EMAIL:</span>
+                                            <a href="mailto:{{ $dept->complement }}" class="hover:text-white transition-colors text-[11px] uppercase">{{ $dept->complement }}</a>
                                         </div>
                                     @endif
                                 </div>
@@ -401,22 +401,30 @@
 
                         {{-- Contatos Globais (Fallback) se não houver departamentos --}}
                         @if($contactDepartments->isEmpty())
-                            <div class="space-y-3">
-                                @if($settings->get('phone'))
-                                    <a href="tel:{{ $settings->get('phone') }}" class="flex items-center gap-3 text-gray-400 hover:text-white transition-colors">
-                                        <i class="fas fa-phone text-red-500"></i> {{ $settings->get('phone') }}
-                                    </a>
-                                @endif
-                                @if($settings->get('whatsapp'))
-                                    <a href="https://wa.me/{{ preg_replace('/\D/', '', $settings->get('whatsapp')) }}" class="flex items-center gap-3 text-gray-400 hover:text-white transition-colors">
-                                        <i class="fab fa-whatsapp text-green-500"></i> {{ $settings->get('whatsapp') }}
-                                    </a>
-                                @endif
-                                @if($settings->get('email'))
-                                    <a href="mailto:{{ $settings->get('email') }}" class="flex items-center gap-3 text-gray-400 hover:text-white transition-colors">
-                                        <i class="fas fa-envelope text-red-500"></i> {{ $settings->get('email') }}
-                                    </a>
-                                @endif
+                            <div class="space-y-4">
+                                <div class="border border-gray-700 p-4 rounded-sm bg-[#222222]/50">
+                                    <h4 class="text-white font-bold mb-3 uppercase tracking-wider border-b border-gray-700 pb-2">Central de Atendimento</h4>
+                                    <div class="space-y-2 text-gray-300">
+                                        @if($settings->get('phone'))
+                                            <div class="flex items-center gap-2">
+                                                <span class="font-bold text-white text-[11px]">TEL:</span>
+                                                <span class="text-[13px]">{{ $settings->get('phone') }}</span>
+                                            </div>
+                                        @endif
+                                        @if($settings->get('whatsapp'))
+                                            <div class="flex items-center gap-2">
+                                                <i class="fab fa-whatsapp text-green-500 text-base"></i>
+                                                <a href="https://wa.me/{{ preg_replace('/\D/', '', $settings->get('whatsapp')) }}" class="hover:text-white transition-colors text-[13px]">{{ $settings->get('whatsapp') }}</a>
+                                            </div>
+                                        @endif
+                                        @if($settings->get('email'))
+                                            <div class="flex items-center gap-2 mt-1">
+                                                <span class="font-bold text-white text-[11px]">EMAIL:</span>
+                                                <a href="mailto:{{ $settings->get('email') }}" class="hover:text-white transition-colors text-[11px] uppercase">{{ $settings->get('email') }}</a>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
                         @endif
                     </div>
