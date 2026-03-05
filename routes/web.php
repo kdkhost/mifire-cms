@@ -107,6 +107,22 @@ Route::get('/debug-urls', function () {
     return response()->json(['pages' => $pages, 'menus' => $menus]);
 });
 
+// ROTA TEMPORÁRIA - remover após diagnóstico
+Route::get('/debug-widget-upload', function () {
+    $attendantsJson = \App\Models\Setting::get('whatsapp_widget_attendants', '[]');
+    $attendants = json_decode($attendantsJson, true) ?: [];
+    return response()->json([
+        'attendants_count' => count($attendants),
+        'attendants' => array_map(fn($a) => [
+            'name' => $a['name'] ?? null,
+            'image' => $a['image'] ?? null,
+            'image_url' => !empty($a['image']) ? asset('storage/' . $a['image']) : null,
+        ], $attendants),
+        'storage_files' => \Illuminate\Support\Facades\Storage::disk('public')->files('whatsapp_attendants'),
+        'storage_link_exists' => is_link(public_path('storage')),
+    ]);
+});
+
 Route::get('/run-migration', function () {
     try {
         // Força a inclusão do arquivo para evitar erro de classe não encontrada no servidor remoto
