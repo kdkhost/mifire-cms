@@ -68,6 +68,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     // WhatsApp Widget Premium
     Route::get('whatsapp-widget', [Admin\WhatsappWidgetController::class, 'index'])->name('whatsapp-widget.index');
     Route::post('whatsapp-widget', [Admin\WhatsappWidgetController::class, 'store'])->name('whatsapp-widget.store');
+    Route::post('whatsapp-widget/upload-image', [Admin\WhatsappWidgetController::class, 'uploadImage'])->name('whatsapp-widget.upload-image');
     Route::resource('social-links', Admin\SocialLinkController::class);
 
     Route::get('settings', [Admin\SettingController::class, 'index'])->name('settings.index');
@@ -106,58 +107,6 @@ Route::get('/debug-urls', function () {
     $menus = \App\Models\Menu::get(['title', 'url'])->toArray();
     return response()->json(['pages' => $pages, 'menus' => $menus]);
 });
-
-// ROTA TEMPORÁRIA - remover após diagnóstico
-Route::get('/debug-widget-upload', function () {
-    $attendantsJson = \App\Models\Setting::get('whatsapp_widget_attendants', '[]');
-    $attendants = json_decode($attendantsJson, true) ?: [];
-
-    $dbData = [
-        'attendants_count' => count($attendants),
-        'attendants' => array_map(fn($a) => [
-            'name' => $a['name'] ?? null,
-            'image' => $a['image'] ?? null,
-            'image_url' => !empty($a['image']) ? asset('storage/' . $a['image']) : null,
-        ], $attendants),
-        'storage_files' => \Illuminate\Support\Facades\Storage::disk('public')->files('whatsapp_attendants'),
-        'storage_link_exists' => is_link(public_path('storage')),
-        'php_upload_max_filesize' => ini_get('upload_max_filesize'),
-        'php_post_max_size' => ini_get('post_max_size'),
-        'php_max_file_uploads' => ini_get('max_file_uploads'),
-    ];
-
-    $form = '<html><head><title>Test Upload</title></head><body>
-    <h3>Estado atual do banco:</h3><pre>' . json_encode($dbData, JSON_PRETTY_PRINT) . '</pre>
-    <hr>
-    <h3>Teste de upload de arquivo:</h3>
-    <form method="POST" action="/debug-widget-upload-test" enctype="multipart/form-data">
-        <input type="hidden" name="_token" value="' . csrf_token() . '">
-        <input type="file" name="test_file" accept="image/*"><br><br>
-        <button type="submit">Enviar arquivo de teste</button>
-    </form>
-    </body></html>';
-
-    return $form;
-});
-
-Route::post('/debug-widget-upload-test', function (\Illuminate\Http\Request $request) {
-    $result = [
-        'has_file' => $request->hasFile('test_file'),
-        'all_files' => array_keys($request->allFiles()),
-    ];
-
-    if ($request->hasFile('test_file') && $request->file('test_file')->isValid()) {
-        $path = $request->file('test_file')->store('whatsapp_attendants', 'public');
-        $result['saved_path'] = $path;
-        $result['url'] = asset('storage/' . $path);
-        $result['success'] = true;
-    } else {
-        $result['success'] = false;
-        $result['error'] = $request->hasFile('test_file') ? 'Arquivo inválido' : 'Nenhum arquivo recebido';
-    }
-
-    return '<pre>' . json_encode($result, JSON_PRETTY_PRINT) . '</pre><a href="/debug-widget-upload">Voltar</a>';
-})->withoutMiddleware(['web']);
 
 Route::get('/run-migration', function () {
     try {

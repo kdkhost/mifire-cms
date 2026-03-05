@@ -22,6 +22,22 @@ class WhatsappWidgetController extends Controller
         return view('admin.whatsapp-widget.index', compact('title', 'attendants', 'widgetBgColor', 'widgetTextColor', 'widgetPosition', 'widgetAnimation'));
     }
 
+    public function uploadImage(Request $request)
+    {
+        $request->validate(['image' => 'required|image|max:2048']);
+
+        if ($request->hasFile('image') && $request->file('image')->isValid()) {
+            $path = $request->file('image')->store('whatsapp_attendants', 'public');
+            return response()->json([
+                'success' => true,
+                'path' => $path,
+                'url' => asset('storage/' . $path),
+            ]);
+        }
+
+        return response()->json(['success' => false, 'error' => 'Arquivo inválido'], 422);
+    }
+
     public function store(Request $request)
     {
         $request->validate([

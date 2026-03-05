@@ -37,9 +37,9 @@
 
             {{-- APARÊNCIA DO WIDGET --}}
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8" x-data="{
-                            bgColor: '{{ $widgetBgColor }}',
-                            textColor: '{{ $widgetTextColor }}'
-                        }">
+                                bgColor: '{{ $widgetBgColor }}',
+                                textColor: '{{ $widgetTextColor }}'
+                            }">
                 <h2 class="text-lg font-bold text-gray-900 mb-5 border-b border-gray-100 pb-3 flex items-center gap-2">
                     <i class="fas fa-palette text-red-500 text-base"></i>
                     Aparência do Chatbox
@@ -166,23 +166,52 @@
                                 <label class="block text-sm font-medium text-gray-700 mb-3">Foto / Avatar do
                                     Atendente</label>
                                 <div class="flex items-center gap-5">
-                                    <template x-if="attendant.image">
-                                        <img :src="'/storage/' + attendant.image"
-                                            class="w-20 h-20 rounded-full object-cover border-4 border-green-50 shadow-md">
-                                    </template>
-                                    <template x-if="!attendant.image">
-                                        <div
-                                            class="w-20 h-20 rounded-full bg-gray-50 flex items-center justify-center border border-dashed border-gray-300">
-                                            <i class="fas fa-user-circle text-3xl text-gray-300"></i>
+                                    {{-- Preview da imagem --}}
+                                    <div class="relative flex-shrink-0">
+                                        <template x-if="attendant.image">
+                                            <img :src="attendant.imagePreview || '/storage/' + attendant.image"
+                                                class="w-20 h-20 rounded-full object-cover border-4 border-green-50 shadow-md">
+                                        </template>
+                                        <template x-if="!attendant.image">
+                                            <div
+                                                class="w-20 h-20 rounded-full bg-gray-50 flex items-center justify-center border border-dashed border-gray-300">
+                                                <i class="fas fa-user-circle text-3xl text-gray-300"></i>
+                                            </div>
+                                        </template>
+                                        {{-- Spinner de carregamento --}}
+                                        <div x-show="attendant.uploading"
+                                            class="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center">
+                                            <svg class="animate-spin h-6 w-6 text-white" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                                    stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor"
+                                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                                </path>
+                                            </svg>
                                         </div>
-                                    </template>
+                                    </div>
                                     <div class="flex-1">
-                                        <input type="file" :name="'attendants['+index+'][image_upload]'" accept="image/*"
-                                            class="no-dropzone w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100 transition-all cursor-pointer border border-gray-200 rounded-lg p-1">
+                                        {{-- Input de arquivo — faz upload AJAX ao selecionar, NÃO precisa de name no form
+                                        --}}
+                                        <label
+                                            class="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer bg-gray-50 hover:bg-red-50 hover:border-red-400 transition-all">
+                                            <div class="flex flex-col items-center justify-center pt-3 pb-3">
+                                                <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 mb-1"></i>
+                                                <p class="text-sm text-gray-500"><span
+                                                        class="font-semibold text-red-600">Clique para enviar</span> ou
+                                                    arraste</p>
+                                                <p class="text-xs text-gray-400 mt-1">JPG, PNG quadrado (ideal 150x150px)
+                                                </p>
+                                            </div>
+                                            <input type="file" class="no-dropzone hidden" accept="image/*"
+                                                @change="uploadAttendantImage(index, $event)">
+                                        </label>
+                                        {{-- Mensagem de status do upload --}}
+                                        <p x-show="attendant.uploadError" x-text="attendant.uploadError"
+                                            class="text-xs text-red-500 mt-1"></p>
+                                        {{-- Hidden field com o path da imagem para envio no form --}}
                                         <input type="hidden" :name="'attendants['+index+'][image]'"
                                             x-model="attendant.image">
-                                        <p class="text-xs text-gray-400 mt-2">Formatos recomendados: JPG ou PNG quadrado
-                                            (Ex: 150x150px).</p>
                                     </div>
                                 </div>
                             </div>
@@ -283,6 +312,52 @@
                                 this.attendants.splice(index, 1);
                             }
                         });
+                    },
+                    uploadAttendantImage(index, event) {
+                        const file = event.target.files[0];
+                        if (!file) return;
+
+                        const attendant = this.attendants[index];
+                        attendant.uploading = true;
+                        attendant.uploadError = null;
+
+                        // Preview local imediato
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            attendant.imagePreview = e.target.result;
+                        };
+                        reader.readAsDataURL(file);
+
+                        // Upload Real via AJAX
+                        const formData = new FormData();
+                        formData.append('image', file);
+                        formData.append('_token', '{{ csrf_token() }}');
+
+                        fetch('{{ route('admin.whatsapp-widget.upload-image') }}', {
+                                method: 'POST',
+                                body: formData,
+                                headers: {
+                                    'X-Requested-With': 'XMLHttpRequest'
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    attendant.image = data.path;
+                                    attendant.imagePreview = data.url;
+                                } else {
+                                    attendant.uploadError = data.error || 'Erro no upload';
+                                    attendant.imagePreview = null;
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                attendant.uploadError = 'Falha na conexão com o servidor';
+                                attendant.imagePreview = null;
+                            })
+                            .finally(() => {
+                                attendant.uploading = false;
+                            });
                     }
                 }
             }
