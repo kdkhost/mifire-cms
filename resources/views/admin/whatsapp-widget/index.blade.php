@@ -36,57 +36,110 @@
             </div>
 
             {{-- APARÊNCIA DO WIDGET --}}
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
-                <h2 class="text-lg font-bold text-gray-900 mb-4 border-b border-gray-100 pb-3">Aparência do Chatbox</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Cor de Fundo Principal</label>
-                        <div class="flex items-center gap-2">
-                            <input type="color" name="widget_bg_color" value="{{ $widgetBgColor }}"
-                                class="h-10 w-10 p-0 border-0 rounded overflow-hidden cursor-pointer">
-                            <input type="text" value="{{ $widgetBgColor }}"
-                                class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" readonly>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8" x-data="{
+                        bgColor: '{{ $widgetBgColor }}',
+                        textColor: '{{ $widgetTextColor }}'
+                    }">
+                <h2 class="text-lg font-bold text-gray-900 mb-5 border-b border-gray-100 pb-3 flex items-center gap-2">
+                    <i class="fas fa-palette text-red-500 text-base"></i>
+                    Aparência do Chatbox
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+
+                    {{-- Cor de Fundo --}}
+                    <div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Cor de Fundo
+                            Principal</label>
+                        <div class="flex flex-col gap-2">
+                            <div class="relative w-full h-14 rounded-lg overflow-hidden border-2 border-white shadow-md cursor-pointer"
+                                :style="'background-color:' + bgColor" title="Clique para abrir o seletor de cor">
+                                <input type="color" name="widget_bg_color" x-model="bgColor"
+                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                                <div class="absolute bottom-1 right-1.5 bg-black/25 text-white text-[10px] font-mono px-1.5 py-0.5 rounded"
+                                    x-text="bgColor"></div>
+                            </div>
+                            <div class="flex items-center gap-1.5 bg-white border border-gray-200 rounded-lg px-2 py-1">
+                                <span class="w-4 h-4 rounded-full border border-gray-200 shrink-0"
+                                    :style="'background-color:' + bgColor"></span>
+                                <input type="text" x-model="bgColor" maxlength="7"
+                                    class="flex-1 text-sm font-mono text-gray-700 bg-transparent border-0 p-0 focus:outline-none focus:ring-0">
+                            </div>
                         </div>
-                        <p class="text-xs text-gray-500 mt-2">Cor do topo da janela e do botão flutuante principal.</p>
+                        <p class="text-[11px] text-gray-400 mt-2">Cor do topo do chatbox e do botão flutuante.</p>
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Cor do Ícone / Texto</label>
-                        <div class="flex items-center gap-2">
-                            <input type="color" name="widget_text_color" value="{{ $widgetTextColor }}"
-                                class="h-10 w-10 p-0 border-0 rounded overflow-hidden cursor-pointer">
-                            <input type="text" value="{{ $widgetTextColor }}"
-                                class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" readonly>
+                    {{-- Cor do Ícone --}}
+                    <div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Cor do Texto
+                            / Ícone</label>
+                        <div class="flex flex-col gap-2">
+                            <div class="relative w-full h-14 rounded-lg overflow-hidden border-2 border-white shadow-md cursor-pointer"
+                                :style="'background-color:' + textColor" title="Clique para abrir o seletor de cor">
+                                <input type="color" name="widget_text_color" x-model="textColor"
+                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                                <div class="absolute bottom-1 right-1.5 bg-black/25 text-white text-[10px] font-mono px-1.5 py-0.5 rounded"
+                                    x-text="textColor"></div>
+                            </div>
+                            <div class="flex items-center gap-1.5 bg-white border border-gray-200 rounded-lg px-2 py-1">
+                                <span class="w-4 h-4 rounded-full border border-gray-200 shrink-0"
+                                    :style="'background-color:' + textColor"></span>
+                                <input type="text" x-model="textColor" maxlength="7"
+                                    class="flex-1 text-sm font-mono text-gray-700 bg-transparent border-0 p-0 focus:outline-none focus:ring-0">
+                            </div>
                         </div>
-                        <p class="text-xs text-gray-500 mt-2">Cor visível dentro do botão (geralmente branco).</p>
+                        <p class="text-[11px] text-gray-400 mt-2">Cor visível no ícone e texto (geralmente branco).</p>
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Posição na Tela</label>
-                        <select name="widget_position"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500">
-                            <option value="bottom-right" {{ $widgetPosition === 'bottom-right' ? 'selected' : '' }}>Canto
-                                Inferior Direito</option>
-                            <option value="bottom-left" {{ $widgetPosition === 'bottom-left' ? 'selected' : '' }}>Canto
-                                Inferior Esquerdo</option>
-                        </select>
-                        <p class="text-xs text-gray-500 mt-2">De que lado a bolha a e o chatbox vão ser exibidos no seu
-                            site.</p>
+                    {{-- Posição --}}
+                    <div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Posição na
+                            Tela</label>
+                        <div class="grid grid-cols-2 gap-2 mt-1">
+                            <label class="relative">
+                                <input type="radio" name="widget_position" value="bottom-right" class="peer sr-only" {{ $widgetPosition === 'bottom-right' ? 'checked' : '' }}>
+                                <div
+                                    class="flex flex-col items-center justify-center gap-1.5 border-2 border-gray-200 rounded-lg p-2.5 cursor-pointer text-center peer-checked:border-red-500 peer-checked:bg-red-50 transition-all hover:border-gray-300">
+                                    <div class="w-8 h-6 bg-gray-200 rounded relative peer-checked:bg-red-100">
+                                        <span
+                                            class="absolute bottom-0.5 right-0.5 w-2 h-2 rounded-full bg-gray-400 peer-checked:bg-red-500"></span>
+                                    </div>
+                                    <span class="text-[11px] font-medium text-gray-600">Direito</span>
+                                </div>
+                            </label>
+                            <label class="relative">
+                                <input type="radio" name="widget_position" value="bottom-left" class="peer sr-only" {{ $widgetPosition === 'bottom-left' ? 'checked' : '' }}>
+                                <div
+                                    class="flex flex-col items-center justify-center gap-1.5 border-2 border-gray-200 rounded-lg p-2.5 cursor-pointer text-center peer-checked:border-red-500 peer-checked:bg-red-50 transition-all hover:border-gray-300">
+                                    <div class="w-8 h-6 bg-gray-200 rounded relative">
+                                        <span class="absolute bottom-0.5 left-0.5 w-2 h-2 rounded-full bg-gray-400"></span>
+                                    </div>
+                                    <span class="text-[11px] font-medium text-gray-600">Esquerdo</span>
+                                </div>
+                            </label>
+                        </div>
+                        <p class="text-[11px] text-gray-400 mt-3">Canto onde o botão ficará flutuando no site.</p>
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Animação do Ícone</label>
-                        <select name="widget_animation"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500">
-                            <option value="pulse" {{ $widgetAnimation === 'pulse' ? 'selected' : '' }}>Batimento (Pulse)
-                            </option>
-                            <option value="bounce" {{ $widgetAnimation === 'bounce' ? 'selected' : '' }}>Pulo (Bounce)
-                            </option>
-                            <option value="none" {{ $widgetAnimation === 'none' ? 'selected' : '' }}>Nenhuma (Estático)
-                            </option>
-                        </select>
-                        <p class="text-xs text-gray-500 mt-2">Comportamento de movimento do ícone para chamar atenção do
-                            cliente.</p>
+                    {{-- Animação --}}
+                    <div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Animação do
+                            Ícone</label>
+                        <div class="space-y-2 mt-1">
+                            @foreach(['pulse' => ['Batimento (Pulse)', 'fas fa-circle-dot'], 'bounce' => ['Pulo (Bounce)', 'fas fa-arrow-up'], 'none' => ['Estático (Nenhuma)', 'fas fa-minus']] as $val => [$label, $icon])
+                                <label class="flex items-center gap-2.5 cursor-pointer group">
+                                    <input type="radio" name="widget_animation" value="{{ $val }}" {{ $widgetAnimation === $val ? 'checked' : '' }} class="accent-red-600 w-4 h-4">
+                                    <div class="flex items-center gap-2">
+                                        <div
+                                            class="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center group-has-[:checked]:bg-red-100 transition">
+                                            <i
+                                                class="{{ $icon }} text-[11px] text-gray-500 group-has-[:checked]:text-red-500"></i>
+                                        </div>
+                                        <span class="text-sm text-gray-700">{{ $label }}</span>
+                                    </div>
+                                </label>
+                            @endforeach
+                        </div>
+                        <p class="text-[11px] text-gray-400 mt-3">Efeito de movimentação do botão flutuante.</p>
                     </div>
                 </div>
             </div>
