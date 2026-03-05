@@ -19,7 +19,7 @@
             </button>
         </div>
 
-        <form action="{{ route('admin.contact-departments.store') }}" method="POST">
+        <form action="{{ route('admin.contact-departments.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="space-y-4">
                 <template x-for="(dept, index) in departments" :key="index">
@@ -33,12 +33,49 @@
                         </button>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {{-- Nome do Setor --}}
+
+                            {{-- Imagem/Avatar --}}
                             <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Foto / Imagem do Atendente ou
+                                    Loja (Para Widget Novo)</label>
+                                <div class="flex items-center gap-4">
+                                    <template x-if="dept.image">
+                                        <img :src="'/storage/' + dept.image"
+                                            class="w-16 h-16 rounded-full object-cover border-2 border-green-500 shadow-sm">
+                                    </template>
+                                    <template x-if="!dept.image">
+                                        <div
+                                            class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center border-2 border-gray-200">
+                                            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                            </svg>
+                                        </div>
+                                    </template>
+                                    <div>
+                                        <input type="file" :name="'departments['+index+'][image]'" accept="image/*"
+                                            class="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100 transition-all">
+                                        <input type="hidden" :name="'departments['+index+'][image]'" x-model="dept.image">
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Nome do Setor --}}
+                            <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Nome do Setor (Ex: VENDAS
                                     EXTINTORES)</label>
                                 <input type="text" :name="'departments['+index+'][name]'" x-model="dept.name" required
                                     class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 uppercase">
+                            </div>
+
+                            {{-- Descrição do Setor --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Subtítulo / Descrição
+                                    Rápida</label>
+                                <input type="text" :name="'departments['+index+'][description]'" x-model="dept.description"
+                                    placeholder="Ex: Atendimento Técnico"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500">
                             </div>
 
                             {{-- Telefones --}}
@@ -97,6 +134,8 @@
                     addDepartment() {
                         this.departments.push({
                             name: '',
+                            description: '',
+                            image: '',
                             phones: '',
                             whatsapp: '',
                             email: ''
