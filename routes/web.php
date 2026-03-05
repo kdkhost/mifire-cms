@@ -27,6 +27,7 @@ Route::post('/admin/reset-password', [Auth\ResetPasswordController::class, 'rese
 Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(function () {
     // Dashboard
     Route::get('/', [Admin\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('dashboard/chart-data', [Admin\DashboardController::class, 'chartData'])->name('dashboard.chart-data');
 
     // Resources
     Route::resource('pages', Admin\PageController::class);

@@ -20,21 +20,47 @@ class VisitController extends Controller
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
                 $q->where('ip_address', 'like', "%{$search}%")
-                  ->orWhere('url', 'like', "%{$search}%");
+                    ->orWhere('url', 'like', "%{$search}%");
             });
         }
 
-        if ($from = $request->input('from')) {
+        if ($from = $request->input('date_from')) {
             $query->whereDate('created_at', '>=', $from);
         }
 
-        if ($to = $request->input('to')) {
+        if ($to = $request->input('date_to')) {
             $query->whereDate('created_at', '<=', $to);
         }
 
         $visits = $query->latest('created_at')->paginate(30)->withQueryString();
 
-        return view('admin.visits.index', compact('visits'));
+        // ── Stats for cards ───────────────────────────────
+        $stats = [
+            'today' => Visit::today()->count(),
+            'week' => Visit::thisWeek()->count(),
+            'month' => Visit::thisMonth()->count(),
+            'total' => Visit::count(),
+        ];
+
+        // ── Chart Data (last 30 days) ─────────────────────
+        $days = 30;
+        $fromLimit = Carbon::now()->subDays($days);
+        $visitsRaw = Visit::select(DB::raw('DATE(created_at) as date'), DB::raw('COUNT(*) as total'))
+            ->where('created_at', '>=', $fromLimit)
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get()
+            ->pluck('total', 'date')
+            ->toArray();
+
+        $chartData = ['labels' => [], 'data' => []];
+        for ($i = $days - 1; $i >= 0; $i--) {
+            $date = Carbon::now()->subDays($i)->format('Y-m-d');
+            $chartData['labels'][] = Carbon::parse($date)->format('d/m');
+            $chartData['data'][] = $visitsRaw[$date] ?? 0;
+        }
+
+        return view('admin.visits.index', compact('visits', 'stats', 'chartData'));
     }
 
     /**
@@ -47,9 +73,9 @@ class VisitController extends Controller
 
         // Visits per day
         $perDay = Visit::select(
-                DB::raw('DATE(created_at) as date'),
-                DB::raw('COUNT(*) as total')
-            )
+            DB::raw('DATE(created_at) as date'),
+            DB::raw('COUNT(*) as total')
+        )
             ->where('created_at', '>=', $from)
             ->groupBy('date')
             ->orderBy('date')
@@ -127,7 +153,7 @@ class VisitController extends Controller
         $filename = 'visitas_' . now()->format('Y-m-d_His') . '.csv';
 
         $headers = [
-            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Type' => 'text/csv; charset=UTF-8',
             'Content-Disposition' => "attachment; filename=\"{$filename}\"",
         ];
 

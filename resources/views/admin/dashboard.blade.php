@@ -6,80 +6,80 @@
     {{-- ==================== STATS CARDS ==================== --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-8">
         {{-- Visitas Hoje --}}
-        <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
-            <div class="flex items-center justify-between mb-3">
-                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+        <div class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center group-hover:bg-blue-600 transition-colors duration-300">
+                    <svg class="w-6 h-6 text-blue-600 group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
                               d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
                               d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                     </svg>
                 </div>
-                <span class="text-xs font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full">Hoje</span>
+                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full uppercase tracking-wider">Hoje</span>
             </div>
-            <p class="text-2xl font-bold text-gray-900">{{ number_format($visitsToday ?? 0) }}</p>
-            <p class="text-sm text-gray-500 mt-1">Visitas Hoje</p>
+            <p class="text-3xl font-black text-gray-900">{{ number_format($visitsToday ?? 0) }}</p>
+            <p class="text-sm font-medium text-gray-400 mt-1 uppercase tracking-tight">Visitas</p>
         </div>
 
         {{-- Visitas Mês --}}
-        <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
-            <div class="flex items-center justify-between mb-3">
-                <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-                    <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+        <div class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center group-hover:bg-indigo-600 transition-colors duration-300">
+                    <svg class="w-6 h-6 text-indigo-600 group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
                               d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                     </svg>
                 </div>
-                <span class="text-xs font-medium text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">Mês</span>
+                <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase tracking-wider">Mês</span>
             </div>
-            <p class="text-2xl font-bold text-gray-900">{{ number_format($visitsMonth ?? 0) }}</p>
-            <p class="text-sm text-gray-500 mt-1">Visitas no Mês</p>
+            <p class="text-3xl font-black text-gray-900">{{ number_format($visitsMonth ?? 0) }}</p>
+            <p class="text-sm font-medium text-gray-400 mt-1 uppercase tracking-tight">Acumulado</p>
         </div>
 
         {{-- Contatos Não Lidos --}}
-        <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
-            <div class="flex items-center justify-between mb-3">
-                <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-                    <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+        <div class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center group-hover:bg-red-600 transition-colors duration-300">
+                    <svg class="w-6 h-6 text-red-600 group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
                               d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                     </svg>
                 </div>
                 @if (($unreadContacts ?? 0) > 0)
-                    <span class="text-xs font-medium text-red-600 bg-red-50 px-2 py-0.5 rounded-full">Novo!</span>
+                    <span class="text-xs font-bold text-red-600 bg-red-50 px-3 py-1 rounded-full uppercase tracking-wider animate-pulse">Novo!</span>
                 @endif
             </div>
-            <p class="text-2xl font-bold text-gray-900">{{ number_format($unreadContacts ?? 0) }}</p>
-            <p class="text-sm text-gray-500 mt-1">Contatos Não Lidos</p>
+            <p class="text-3xl font-black text-gray-900">{{ number_format($unreadContacts ?? 0) }}</p>
+            <p class="text-sm font-medium text-gray-400 mt-1 uppercase tracking-tight">Mensagens</p>
         </div>
 
         {{-- Total Produtos --}}
-        <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
-            <div class="flex items-center justify-between mb-3">
-                <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-                    <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+        <div class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center group-hover:bg-emerald-600 transition-colors duration-300">
+                    <svg class="w-6 h-6 text-emerald-600 group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
                               d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
                     </svg>
                 </div>
             </div>
-            <p class="text-2xl font-bold text-gray-900">{{ number_format($totalProducts ?? 0) }}</p>
-            <p class="text-sm text-gray-500 mt-1">Total Produtos</p>
+            <p class="text-3xl font-black text-gray-900">{{ number_format($totalProducts ?? 0) }}</p>
+            <p class="text-sm font-medium text-gray-400 mt-1 uppercase tracking-tight">Produtos</p>
         </div>
 
         {{-- Total Posts --}}
-        <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
-            <div class="flex items-center justify-between mb-3">
-                <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
-                    <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+        <div class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center group-hover:bg-amber-600 transition-colors duration-300">
+                    <svg class="w-6 h-6 text-amber-600 group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
                               d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
                     </svg>
                 </div>
             </div>
-            <p class="text-2xl font-bold text-gray-900">{{ number_format($totalPosts ?? 0) }}</p>
-            <p class="text-sm text-gray-500 mt-1">Total Posts</p>
+            <p class="text-3xl font-black text-gray-900">{{ number_format($totalPosts ?? 0) }}</p>
+            <p class="text-sm font-medium text-gray-400 mt-1 uppercase tracking-tight">Blog Posts</p>
         </div>
     </div>
 
