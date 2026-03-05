@@ -34,6 +34,10 @@ class WhatsappWidgetController extends Controller
 
         $attendants = $request->input('attendants', []);
 
+        // Carregar dados anteriores para preservar imagens não substituídas
+        $oldAttendsJson = Setting::get('whatsapp_widget_attendants', '[]');
+        $oldAttendants = json_decode($oldAttendsJson, true) ?: [];
+
         // Process file uploads if they exist in the input loop
         if ($request->hasFile('attendants')) {
             $files = $request->file('attendants');
@@ -41,6 +45,16 @@ class WhatsappWidgetController extends Controller
                 if (isset($attendantFiles['image_upload'])) {
                     $path = $attendantFiles['image_upload']->store('whatsapp_attendants', 'public');
                     $attendants[$index]['image'] = $path;
+                }
+            }
+        }
+
+        // Garantir que imagens existentes não sejam apagadas por campo hidden vazio
+        foreach ($attendants as $index => $att) {
+            if (empty($att['image']) && isset($oldAttendants[$index]['image'])) {
+                // Verifica se o atendente é o "mesmo" pelo nome (heurística simples)
+                if (isset($oldAttendants[$index]['name']) && $oldAttendants[$index]['name'] === ($att['name'] ?? '')) {
+                    $attendants[$index]['image'] = $oldAttendants[$index]['image'];
                 }
             }
         }
