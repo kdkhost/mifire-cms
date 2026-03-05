@@ -30,8 +30,8 @@ class WhatsappWidgetController extends Controller
         if ($request->hasFile('attendants')) {
             $files = $request->file('attendants');
             foreach ($files as $index => $attendantFiles) {
-                if (isset($attendantFiles['image'])) {
-                    $path = $attendantFiles['image']->store('whatsapp_attendants', 'public');
+                if (isset($attendantFiles['image_upload'])) {
+                    $path = $attendantFiles['image_upload']->store('whatsapp_attendants', 'public');
                     $attendants[$index]['image'] = $path;
                 }
             }

@@ -68,7 +68,7 @@
                                         </div>
                                     </template>
                                     <div class="flex-1">
-                                        <input type="file" :name="'attendants['+index+'][image]'" accept="image/*"
+                                        <input type="file" :name="'attendants['+index+'][image_upload]'" accept="image/*"
                                             class="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100 transition-all cursor-pointer border border-gray-200 rounded-lg p-1">
                                         <input type="hidden" :name="'attendants['+index+'][image]'"
                                             x-model="attendant.image">

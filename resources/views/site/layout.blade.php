@@ -572,17 +572,10 @@
                             </button>
                         </div>
                         <p class="text-[13px] text-white/80 mt-2 ml-11">Normalmente respondemos em poucos minutos.</p>
-                        
-                        {{-- Forma do detalhe da onda --}}
-                        <div class="absolute -bottom-[1px] left-0 w-full overflow-hidden leading-none">
-                            <svg class="relative block w-[calc(100%+1.3px)] h-[18px]" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-                                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V0C101.44,48.26,203.11,85.22,321.39,56.44Z" class="fill-white"></path>
-                            </svg>
-                        </div>
                     </div>
 
-                    {{-- Lista de Atendentes (Fundo sutil claro) --}}
-                    <div class="px-5 py-4 bg-[#fbfbfb] max-h-[350px] overflow-y-auto wpp-scrollbar">
+                    {{-- Lista de Atendentes --}}
+                    <div class="px-5 py-4 bg-gray-50 max-h-[350px] overflow-y-auto wpp-scrollbar border-t-2 border-red-500">
                         <div class="space-y-3">
                             @foreach($attendants as $att)
                             <a href="https://wa.me/{{ preg_replace('/\D/', '', $att['whatsapp'] ?? '') }}?text={{ urlencode($att['message'] ?: 'Olá! Gostaria de falar com ' . ($att['name'] ?? '')) }}"
