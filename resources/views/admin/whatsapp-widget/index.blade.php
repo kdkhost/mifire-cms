@@ -37,9 +37,9 @@
 
             {{-- APARÊNCIA DO WIDGET --}}
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8" x-data="{
-                        bgColor: '{{ $widgetBgColor }}',
-                        textColor: '{{ $widgetTextColor }}'
-                    }">
+                            bgColor: '{{ $widgetBgColor }}',
+                            textColor: '{{ $widgetTextColor }}'
+                        }">
                 <h2 class="text-lg font-bold text-gray-900 mb-5 border-b border-gray-100 pb-3 flex items-center gap-2">
                     <i class="fas fa-palette text-red-500 text-base"></i>
                     Aparência do Chatbox
@@ -178,7 +178,7 @@
                                     </template>
                                     <div class="flex-1">
                                         <input type="file" :name="'attendants['+index+'][image_upload]'" accept="image/*"
-                                            class="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100 transition-all cursor-pointer border border-gray-200 rounded-lg p-1">
+                                            class="no-dropzone w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100 transition-all cursor-pointer border border-gray-200 rounded-lg p-1">
                                         <input type="hidden" :name="'attendants['+index+'][image]'"
                                             x-model="attendant.image">
                                         <p class="text-xs text-gray-400 mt-2">Formatos recomendados: JPG ou PNG quadrado

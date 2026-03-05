@@ -100,7 +100,7 @@
                         $isActive = request()->routeIs($item['route'] . '*');
                     @endphp
                     <a href="{{ route($item['route']) }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-150
-                                                                                                  {{ $isActive
+                                                                                                          {{ $isActive
                 ? 'bg-red-600 text-white shadow-lg shadow-red-600/20'
                 : 'text-gray-400 hover:text-white hover:bg-gray-800' }}">
                         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -112,7 +112,7 @@
                         @if (isset($item['badge']) && isset(${$item['badge']}) && ${$item['badge']} > 0)
                             <span
                                 class="ml-auto inline-flex items-center justify-center w-5 h-5 text-xs font-bold rounded-full
-                                                                                                                                                 {{ $isActive ? 'bg-white text-red-600' : 'bg-red-600 text-white' }}">
+                                                                                                                                                             {{ $isActive ? 'bg-white text-red-600' : 'bg-red-600 text-white' }}">
                                 {{ ${$item['badge']} }}
                             </span>
                         @endif
@@ -426,7 +426,7 @@
              * Converte automaticamente inputs de file tradicionais em dropzones modernas.
              */
             window.initDragAndDrop = function () {
-                const fileInputs = document.querySelectorAll('input[type="file"]:not(.dropzone-initialized)');
+                const fileInputs = document.querySelectorAll('input[type="file"]:not(.dropzone-initialized):not(.no-dropzone)');
 
                 fileInputs.forEach(input => {
                     input.classList.add('dropzone-initialized');
