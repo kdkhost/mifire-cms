@@ -38,7 +38,7 @@
             {{-- APARÊNCIA DO WIDGET --}}
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
                 <h2 class="text-lg font-bold text-gray-900 mb-4 border-b border-gray-100 pb-3">Aparência do Chatbox</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Cor de Fundo Principal</label>
                         <div class="flex items-center gap-2">
@@ -58,8 +58,7 @@
                             <input type="text" value="{{ $widgetTextColor }}"
                                 class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" readonly>
                         </div>
-                        <p class="text-xs text-gray-500 mt-2">Cor visível dentro do botão flutuante principal (geralmente
-                            branco).</p>
+                        <p class="text-xs text-gray-500 mt-2">Cor visível dentro do botão (geralmente branco).</p>
                     </div>
 
                     <div>
@@ -71,8 +70,23 @@
                             <option value="bottom-left" {{ $widgetPosition === 'bottom-left' ? 'selected' : '' }}>Canto
                                 Inferior Esquerdo</option>
                         </select>
-                        <p class="text-xs text-gray-500 mt-2">De que lado a "bolha de whatsapp" e o chatbox vão ser exibidos
-                            no carregamento do site.</p>
+                        <p class="text-xs text-gray-500 mt-2">De que lado a bolha a e o chatbox vão ser exibidos no seu
+                            site.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Animação do Ícone</label>
+                        <select name="widget_animation"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500">
+                            <option value="pulse" {{ $widgetAnimation === 'pulse' ? 'selected' : '' }}>Batimento (Pulse)
+                            </option>
+                            <option value="bounce" {{ $widgetAnimation === 'bounce' ? 'selected' : '' }}>Pulo (Bounce)
+                            </option>
+                            <option value="none" {{ $widgetAnimation === 'none' ? 'selected' : '' }}>Nenhuma (Estático)
+                            </option>
+                        </select>
+                        <p class="text-xs text-gray-500 mt-2">Comportamento de movimento do ícone para chamar atenção do
+                            cliente.</p>
                     </div>
                 </div>
             </div>

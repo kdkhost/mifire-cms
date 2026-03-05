@@ -17,8 +17,9 @@ class WhatsappWidgetController extends Controller
         $widgetBgColor = Setting::get('whatsapp_bg_color', '#DC2626');
         $widgetTextColor = Setting::get('whatsapp_text_color', '#ffffff');
         $widgetPosition = Setting::get('whatsapp_position', 'bottom-right');
+        $widgetAnimation = Setting::get('whatsapp_animation', 'pulse');
 
-        return view('admin.whatsapp-widget.index', compact('title', 'attendants', 'widgetBgColor', 'widgetTextColor', 'widgetPosition'));
+        return view('admin.whatsapp-widget.index', compact('title', 'attendants', 'widgetBgColor', 'widgetTextColor', 'widgetPosition', 'widgetAnimation'));
     }
 
     public function store(Request $request)
@@ -28,6 +29,7 @@ class WhatsappWidgetController extends Controller
             'widget_bg_color' => 'nullable|string|max:20',
             'widget_text_color' => 'nullable|string|max:20',
             'widget_position' => 'nullable|string|max:20',
+            'widget_animation' => 'nullable|string|max:20',
         ]);
 
         $attendants = $request->input('attendants', []);
@@ -53,6 +55,7 @@ class WhatsappWidgetController extends Controller
         Setting::set('whatsapp_bg_color', $request->input('widget_bg_color', '#DC2626'));
         Setting::set('whatsapp_text_color', $request->input('widget_text_color', '#ffffff'));
         Setting::set('whatsapp_position', $request->input('widget_position', 'bottom-right'));
+        Setting::set('whatsapp_animation', $request->input('widget_animation', 'pulse'));
         Setting::set('whatsapp_widget_attendants', json_encode(array_values($attendants)));
 
         return redirect()->back()->with('success', 'Configurações do Atendimento Premium (Widget) salvas com sucesso!');

@@ -543,7 +543,9 @@
         $widgetBgColor = $settings->get('whatsapp_bg_color', '#DC2626');
         $widgetTextColor = $settings->get('whatsapp_text_color', '#ffffff');
         $widgetPosition = $settings->get('whatsapp_position', 'bottom-right');
+        $widgetAnimation = $settings->get('whatsapp_animation', 'pulse');
         $positionClasses = $widgetPosition === 'bottom-left' ? 'left-6 items-start' : 'right-6 items-end';
+        $animationClass = $widgetAnimation !== 'none' ? 'animate-' . $widgetAnimation : '';
     @endphp
 
     @if((count($attendants) > 0 || $globalWhatsapp))
@@ -624,7 +626,7 @@
                 {{-- Botão Flutuante (Fab Base) Premium (Cor Dinâmica) --}}
                 <button @click="wppOpen = !wppOpen"
                         style="background-color: {{ $widgetBgColor }}; color: {{ $widgetTextColor }}; box-shadow: 0 4px 14px 0 {{ $widgetBgColor }}80;"
-                        class="w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer relative z-50 group hover:shadow-lg"
+                        class="w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer relative z-50 group hover:shadow-lg {{ $animationClass }}"
                         onmouseover="this.style.boxShadow='0 6px 20px {{ $widgetBgColor }}90'"
                         onmouseout="this.style.boxShadow='0 4px 14px 0 {{ $widgetBgColor }}80'"
                 >
@@ -641,7 +643,7 @@
                    style="background-color: {{ $widgetBgColor }}; color: {{ $widgetTextColor }}; box-shadow: 0 4px 14px 0 {{ $widgetBgColor }}80;"
                    onmouseover="this.style.boxShadow='0 6px 20px {{ $widgetBgColor }}90'"
                    onmouseout="this.style.boxShadow='0 4px 14px 0 {{ $widgetBgColor }}80'"
-                   class="w-14 h-14 rounded-full flex items-center justify-center hover:scale-110 transition-all relative z-50"
+                   class="w-14 h-14 rounded-full flex items-center justify-center hover:scale-110 transition-all relative z-50 {{ $animationClass }}"
                 >
                     <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
                 </a>
