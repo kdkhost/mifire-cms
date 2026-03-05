@@ -35,6 +35,48 @@
                 </div>
             </div>
 
+            {{-- APARÊNCIA DO WIDGET --}}
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
+                <h2 class="text-lg font-bold text-gray-900 mb-4 border-b border-gray-100 pb-3">Aparência do Chatbox</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Cor de Fundo Principal</label>
+                        <div class="flex items-center gap-2">
+                            <input type="color" name="widget_bg_color" value="{{ $widgetBgColor }}"
+                                class="h-10 w-10 p-0 border-0 rounded overflow-hidden cursor-pointer">
+                            <input type="text" value="{{ $widgetBgColor }}"
+                                class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" readonly>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">Cor do topo da janela e do botão flutuante principal.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Cor do Ícone / Texto</label>
+                        <div class="flex items-center gap-2">
+                            <input type="color" name="widget_text_color" value="{{ $widgetTextColor }}"
+                                class="h-10 w-10 p-0 border-0 rounded overflow-hidden cursor-pointer">
+                            <input type="text" value="{{ $widgetTextColor }}"
+                                class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" readonly>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">Cor visível dentro do botão flutuante principal (geralmente
+                            branco).</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Posição na Tela</label>
+                        <select name="widget_position"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500">
+                            <option value="bottom-right" {{ $widgetPosition === 'bottom-right' ? 'selected' : '' }}>Canto
+                                Inferior Direito</option>
+                            <option value="bottom-left" {{ $widgetPosition === 'bottom-left' ? 'selected' : '' }}>Canto
+                                Inferior Esquerdo</option>
+                        </select>
+                        <p class="text-xs text-gray-500 mt-2">De que lado a "bolha de whatsapp" e o chatbox vão ser exibidos
+                            no carregamento do site.</p>
+                    </div>
+                </div>
+            </div>
+
             {{-- LISTA DE CONTATOS / ATENDENTES --}}
             <div class="space-y-4">
                 <h2 class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-2">Contatos Disponíveis no Chat</h2>

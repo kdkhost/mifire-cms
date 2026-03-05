@@ -540,51 +540,55 @@
         $chatTitle = $settings->get('whatsapp_widget_title', 'Olá! Como podemos te ajudar?');
         $attendantsJson = $settings->get('whatsapp_widget_attendants', '[]');
         $attendants = json_decode($attendantsJson, true) ?: [];
+        $widgetBgColor = $settings->get('whatsapp_bg_color', '#DC2626');
+        $widgetTextColor = $settings->get('whatsapp_text_color', '#ffffff');
+        $widgetPosition = $settings->get('whatsapp_position', 'bottom-right');
+        $positionClasses = $widgetPosition === 'bottom-left' ? 'left-6 items-start' : 'right-6 items-end';
     @endphp
 
     @if((count($attendants) > 0 || $globalWhatsapp))
-        <div x-data="{ wppOpen: false }" class="fixed bottom-6 right-6 z-[110] flex flex-col items-end gap-4 font-sans drop-shadow-2xl">
+        <div x-data="{ wppOpen: false }" class="fixed bottom-6 {{ $positionClasses }} z-[110] flex flex-col gap-4 font-sans drop-shadow-2xl">
             
             @if(count($attendants) > 0)
                 {{-- Chatbox Janela --}}
                 <div x-show="wppOpen" 
-                     x-transition:enter="transition ease-out duration-300 transform origin-bottom-right"
+                     x-transition:enter="transition ease-out duration-300 transform {{ $widgetPosition === 'bottom-left' ? 'origin-bottom-left' : 'origin-bottom-right' }}"
                      x-transition:enter-start="opacity-0 translate-y-10 scale-95"
                      x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-                     x-transition:leave="transition ease-in duration-200 transform origin-bottom-right"
+                     x-transition:leave="transition ease-in duration-200 transform {{ $widgetPosition === 'bottom-left' ? 'origin-bottom-left' : 'origin-bottom-right' }}"
                      x-transition:leave-start="opacity-100 translate-y-0 scale-100"
                      x-transition:leave-end="opacity-0 translate-y-10 scale-95"
                      x-cloak
                      class="w-[340px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.3)] border border-gray-100 overflow-hidden"
                      @click.away="wppOpen = false"
                 >
-                    {{-- Header Vermelho (Cor da Marca) --}}
-                    <div class="bg-gradient-to-r from-red-600 to-red-700 text-white p-5 pb-6 relative rounded-t-2xl">
+                    {{-- Header Colorido Dinamicamente --}}
+                    <div class="p-5 pb-6 relative rounded-t-2xl" style="background-color: {{ $widgetBgColor }}; color: {{ $widgetTextColor }};">
                         <div class="flex items-start justify-between">
                             <div class="flex items-center gap-3">
-                                <div class="bg-white/20 p-2 rounded-full">
-                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
+                                <div class="bg-black/10 p-2 rounded-full">
+                                    <svg class="w-6 h-6" style="color: {{ $widgetTextColor }};" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
                                 </div>
                                 <h3 class="font-bold text-[17px] leading-tight pr-4">{{ $chatTitle }}</h3>
                             </div>
-                            <button @click="wppOpen = false" class="text-white/70 hover:text-white transition-colors pt-0.5">
+                            <button @click="wppOpen = false" class="transition-colors pt-0.5 opacity-70 hover:opacity-100" style="color: {{ $widgetTextColor }};">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                             </button>
                         </div>
-                        <p class="text-[13px] text-white/80 mt-2 ml-11">Normalmente respondemos em poucos minutos.</p>
+                        <p class="text-[13px] mt-2 ml-11 opacity-90">Normalmente respondemos em poucos minutos.</p>
                     </div>
 
                     {{-- Lista de Atendentes --}}
-                    <div class="px-5 py-4 bg-gray-50 max-h-[350px] overflow-y-auto wpp-scrollbar border-t-2 border-red-500">
+                    <div class="px-5 py-4 bg-gray-50 max-h-[350px] overflow-y-auto wpp-scrollbar border-t-[3px]" style="border-color: {{ $widgetBgColor }};">
                         <div class="space-y-3">
                             @foreach($attendants as $att)
                             <a href="https://wa.me/{{ preg_replace('/\D/', '', $att['whatsapp'] ?? '') }}?text={{ urlencode($att['message'] ?: 'Olá! Gostaria de falar com ' . ($att['name'] ?? '')) }}"
                                target="_blank"
-                               class="flex items-center gap-3 bg-white p-3 rounded-xl border border-gray-100 hover:border-green-300 hover:shadow-md transition-all group"
+                               class="flex items-center gap-3 bg-white p-3 rounded-xl border border-gray-100 hover:shadow-md transition-all group"
                             >
                                 {{-- Avatar com Indicador --}}
                                 <div class="relative shrink-0">
-                                    <div class="w-12 h-12 rounded-full overflow-hidden bg-gray-50 flex items-center justify-center border border-gray-100 group-hover:border-green-100 transition-colors">
+                                    <div class="w-12 h-12 rounded-full overflow-hidden bg-gray-50 flex items-center justify-center border border-gray-100 transition-colors">
                                         @if(!empty($att['image']))
                                             <img src="{{ asset('storage/' . $att['image']) }}" alt="{{ $att['name'] ?? '' }}" class="w-full h-full object-cover">
                                         @else
@@ -603,7 +607,7 @@
                                 </div>
 
                                 {{-- Ícone Call to Action --}}
-                                <div class="w-8 h-8 rounded-full bg-green-50 text-green-500 flex items-center justify-center group-hover:bg-green-500 group-hover:text-white transition-colors shrink-0">
+                                <div class="w-8 h-8 rounded-full bg-green-50 text-green-500 flex items-center justify-center transition-colors shrink-0 group-hover:opacity-80">
                                     <svg class="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
                                 </div>
                             </a>
@@ -617,21 +621,28 @@
                     </div>
                 </div>
                 
-                {{-- Botão Flutuante (Fab Base) Vermelho Premium --}}
+                {{-- Botão Flutuante (Fab Base) Premium (Cor Dinâmica) --}}
                 <button @click="wppOpen = !wppOpen"
-                        class="w-14 h-14 rounded-full flex items-center justify-center shadow-[0_4px_14px_0_rgba(220,38,38,0.4)] transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer relative bg-gradient-to-tr from-red-600 to-red-500 text-white z-50 hover:shadow-[0_6px_20px_rgba(220,38,38,0.6)]"
+                        style="background-color: {{ $widgetBgColor }}; color: {{ $widgetTextColor }}; box-shadow: 0 4px 14px 0 {{ $widgetBgColor }}80;"
+                        class="w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer relative z-50 group hover:shadow-lg"
+                        onmouseover="this.style.boxShadow='0 6px 20px {{ $widgetBgColor }}90'"
+                        onmouseout="this.style.boxShadow='0 4px 14px 0 {{ $widgetBgColor }}80'"
                 >
                     <div class="relative w-full h-full flex items-center justify-center">
                         <svg class="w-8 h-8 transition-all duration-300 absolute" :class="wppOpen ? 'opacity-0 scale-50 rotate-90' : 'opacity-100 scale-100 rotate-0'" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
-                        <svg class="w-6 h-6 transition-all duration-300 absolute" :class="wppOpen ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-50 -rotate-90'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                        <svg class="w-6 h-6 transition-all duration-300 absolute" style="color: {{ $widgetTextColor }};" :class="wppOpen ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-50 -rotate-90'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
                     </div>
                 </button>
                 
             @else
-                {{-- Fallback para Único Número (Padrão) - Design mantido em vermelho --}}
+                {{-- Fallback para Único Número (Padrão) - Com Cor Dinâmica --}}
                 <a href="https://wa.me/{{ preg_replace('/\D/', '', $globalWhatsapp) }}?text={{ urlencode($settings->get('whatsapp_message', 'Olá! Gostaria de mais informações.')) }}"
                    target="_blank"
-                   class="w-14 h-14 rounded-full flex items-center justify-center shadow-[0_4px_14px_0_rgba(220,38,38,0.4)] hover:shadow-[0_6px_20px_rgba(220,38,38,0.6)] transition-all bg-gradient-to-tr from-red-600 to-red-500 text-white hover:scale-110 relative z-50">
+                   style="background-color: {{ $widgetBgColor }}; color: {{ $widgetTextColor }}; box-shadow: 0 4px 14px 0 {{ $widgetBgColor }}80;"
+                   onmouseover="this.style.boxShadow='0 6px 20px {{ $widgetBgColor }}90'"
+                   onmouseout="this.style.boxShadow='0 4px 14px 0 {{ $widgetBgColor }}80'"
+                   class="w-14 h-14 rounded-full flex items-center justify-center hover:scale-110 transition-all relative z-50"
+                >
                     <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
                 </a>
             @endif
