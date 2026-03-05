@@ -585,7 +585,7 @@
                     <div class="px-5 py-4 bg-[#fbfbfb] max-h-[350px] overflow-y-auto wpp-scrollbar">
                         <div class="space-y-3">
                             @foreach($attendants as $att)
-                            <a href="https://wa.me/{{ preg_replace('/\D/', '', $att['whatsapp'] ?? '') }}?text={{ urlencode('Olá! Gostaria de falar com ' . ($att['name'] ?? '')) }}"
+                            <a href="https://wa.me/{{ preg_replace('/\D/', '', $att['whatsapp'] ?? '') }}?text={{ urlencode($att['message'] ?: 'Olá! Gostaria de falar com ' . ($att['name'] ?? '')) }}"
                                target="_blank"
                                class="flex items-center gap-3 bg-white p-3 rounded-xl border border-gray-100 hover:border-green-300 hover:shadow-md transition-all group"
                             >

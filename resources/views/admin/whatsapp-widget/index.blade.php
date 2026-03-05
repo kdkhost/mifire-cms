@@ -108,6 +108,16 @@
                                 </div>
                             </div>
 
+                            {{-- Mensagem Pré-definida --}}
+                            <div class="lg:col-span-3 pb-2 pt-2 border-t border-gray-50 border-dashed">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Mensagem Inicial Padrão</label>
+                                <input type="text" :name="'attendants['+index+'][message]'" x-model="attendant.message"
+                                    placeholder="Ex: Olá Comercial! Gostaria de mais informações."
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                                <p class="text-[11px] text-gray-400 mt-1">Texto que já virá digitado pro cliente enviar
+                                    quando ele clicar neste contato. Deixe em branco para nenhuma mensagem.</p>
+                            </div>
+
                         </div>
                     </div>
                 </template>
@@ -141,7 +151,8 @@
                             name: '',
                             role: '',
                             image: '',
-                            whatsapp: ''
+                            whatsapp: '',
+                            message: ''
                         });
                         // Scroll pra baixo
                         setTimeout(() => {
