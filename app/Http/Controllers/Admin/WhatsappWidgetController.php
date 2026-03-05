@@ -32,45 +32,62 @@ class WhatsappWidgetController extends Controller
             'widget_animation' => 'nullable|string|max:20',
         ]);
 
-        $attendants = $request->input('attendants', []);
-
-        // Carregar dados anteriores para preservar imagens não substituídas
+        // Carregar dados anteriores do banco para preservar imagens existentes
         $oldAttendsJson = Setting::get('whatsapp_widget_attendants', '[]');
         $oldAttendants = json_decode($oldAttendsJson, true) ?: [];
 
-        // Process file uploads if they exist in the input loop
+        // Pegar dados textuais do form
+        $rawAttendants = $request->input('attendants', []);
+
+        // Construir o array final mesclando antigos + novos
+        $attendants = [];
+        foreach ($rawAttendants as $index => $att) {
+            // Base: dados antigos como fallback (preserva imagem, role, message)
+            $base = $oldAttendants[$index] ?? [];
+
+            // Mesclar: dados novos sobrescrevem os antigos (exceto image)
+            $merged = array_merge($base, [
+                'name' => $att['name'] ?? ($base['name'] ?? ''),
+                'role' => $att['role'] ?? ($base['role'] ?? ''),
+                'whatsapp' => $att['whatsapp'] ?? ($base['whatsapp'] ?? ''),
+                'message' => $att['message'] ?? ($base['message'] ?? ''),
+                'image' => $base['image'] ?? null, // sempre preserva imagem antiga
+            ]);
+
+            // Se veio imagem nova via hidden field (não vazia), atualiza
+            if (!empty($att['image'])) {
+                $merged['image'] = $att['image'];
+            }
+
+            $attendants[$index] = $merged;
+        }
+
+        // Processar uploads de novas imagens (sobrescreve a imagem antiga se houver arquivo)
         if ($request->hasFile('attendants')) {
-            $files = $request->file('attendants');
-            foreach ($files as $index => $attendantFiles) {
-                if (isset($attendantFiles['image_upload'])) {
+            foreach ($request->file('attendants') as $index => $attendantFiles) {
+                if (isset($attendantFiles['image_upload']) && $attendantFiles['image_upload']->isValid()) {
+                    // Deletar imagem antiga do storage se existir
+                    if (!empty($attendants[$index]['image'])) {
+                        Storage::disk('public')->delete($attendants[$index]['image']);
+                    }
                     $path = $attendantFiles['image_upload']->store('whatsapp_attendants', 'public');
                     $attendants[$index]['image'] = $path;
                 }
             }
         }
 
-        // Garantir que imagens existentes não sejam apagadas por campo hidden vazio
-        foreach ($attendants as $index => $att) {
-            if (empty($att['image']) && isset($oldAttendants[$index]['image'])) {
-                // Verifica se o atendente é o "mesmo" pelo nome (heurística simples)
-                if (isset($oldAttendants[$index]['name']) && $oldAttendants[$index]['name'] === ($att['name'] ?? '')) {
-                    $attendants[$index]['image'] = $oldAttendants[$index]['image'];
-                }
-            }
-        }
-
-        // Clean empty entries (requires a name and a whatsapp number at least)
-        $attendants = array_filter($attendants, function ($att) {
+        // Remover atendentes sem nome ou whatsapp
+        $attendants = array_values(array_filter($attendants, function ($att) {
             return !empty($att['name']) && !empty($att['whatsapp']);
-        });
+        }));
 
-        // Reindex arrays and save settings
+        // Salvar todas as configurações
         Setting::set('whatsapp_widget_title', $request->input('title'));
         Setting::set('whatsapp_bg_color', $request->input('widget_bg_color', '#DC2626'));
         Setting::set('whatsapp_text_color', $request->input('widget_text_color', '#ffffff'));
         Setting::set('whatsapp_position', $request->input('widget_position', 'bottom-right'));
         Setting::set('whatsapp_animation', $request->input('widget_animation', 'pulse'));
-        Setting::set('whatsapp_widget_attendants', json_encode(array_values($attendants)));
+        Setting::set('whatsapp_widget_attendants', json_encode($attendants));
 
         return redirect()->back()->with('success', 'Configurações do Atendimento Premium (Widget) salvas com sucesso!');
     }
