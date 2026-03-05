@@ -64,6 +64,10 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     Route::post('contact-departments', [Admin\ContactDepartmentController::class, 'store'])->name('contact-departments.store');
     Route::resource('menus', Admin\MenuController::class);
     Route::post('menus/reorder', [Admin\MenuController::class, 'updateOrder'])->name('menus.reorder');
+
+    // WhatsApp Widget Premium
+    Route::get('whatsapp-widget', [Admin\WhatsappWidgetController::class, 'index'])->name('whatsapp-widget.index');
+    Route::post('whatsapp-widget', [Admin\WhatsappWidgetController::class, 'store'])->name('whatsapp-widget.store');
     Route::resource('social-links', Admin\SocialLinkController::class);
 
     Route::get('settings', [Admin\SettingController::class, 'index'])->name('settings.index');

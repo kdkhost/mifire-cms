@@ -534,123 +534,121 @@
         </div>
     </footer>
 
-    {{-- ═══ WhatsApp Float Button ═══ --}}
+    {{-- ═══ WhatsApp Premium Widget (Chatbox) ═══ --}}
     @php
         $globalWhatsapp = $settings->get('whatsapp');
-        $departmentsJson = $settings->get('contact_departments', '[]');
-        $contactDepts = json_decode($departmentsJson, true) ?: [];
-        
-        $waBgColor = $settings->get('whatsapp_bg_color', '#25D366');
-        $waTextColor = $settings->get('whatsapp_text_color', '#ffffff');
-        $waPosition = $settings->get('whatsapp_position', 'bottom-right');
-        $waLayout = $settings->get('whatsapp_layout', 'modern');
-
-        // Determina classes de posição e flex
-        $posClasses = match($waPosition) {
-            'bottom-left' => 'bottom-6 left-6 items-start',
-            'center-right' => 'top-1/2 -translate-y-1/2 right-6 items-end',
-            'center-left' => 'top-1/2 -translate-y-1/2 left-6 items-start',
-            default => 'bottom-6 right-6 items-end'
-        };
-
-        // Direção de aparecimento e margens (Para não sair da tela)
-        $isLeft = str_contains($posClasses, 'left');
-        $animOrigin = $isLeft ? 'origin-bottom-left' : 'origin-bottom-right';
-        $menuMarginClass = $isLeft ? 'ml-2' : 'mr-2';
-        $closeBtnAlign = $isLeft ? 'justify-start pl-1' : 'justify-end pr-1';
-        $pillMargin = $isLeft ? 'margin-right: 20px;' : 'margin-left: 20px;';
-        $avatarPos = $isLeft ? '-right-6' : '-left-6';
-        $iconClass = $isLeft ? 'rotate-135' : '-rotate-45';
-        $textDir = $isLeft ? 'text-right pr-6' : 'ml-10 text-left';
+        $chatTitle = $settings->get('whatsapp_widget_title', 'Olá! Como podemos te ajudar?');
+        $attendantsJson = $settings->get('whatsapp_widget_attendants', '[]');
+        $attendants = json_decode($attendantsJson, true) ?: [];
     @endphp
 
-    @if((count($contactDepts) > 0 || $globalWhatsapp) && $waLayout !== 'none')
-        <div x-data="{ wppOpen: false }" class="fixed {{ $posClasses }} z-[110] flex flex-col gap-3 font-sans">
+    @if((count($attendants) > 0 || $globalWhatsapp))
+        <div x-data="{ wppOpen: false }" class="fixed bottom-6 right-6 z-[110] flex flex-col items-end gap-4 font-sans drop-shadow-2xl">
             
-            @if(count($contactDepts) > 0 && $waLayout !== 'simple')
-                {{-- Popup Menu --}}
+            @if(count($attendants) > 0)
+                {{-- Chatbox Janela --}}
                 <div x-show="wppOpen" 
-                     x-transition:enter="transition ease-out duration-300 transform {{ $animOrigin }}"
+                     x-transition:enter="transition ease-out duration-300 transform origin-bottom-right"
                      x-transition:enter-start="opacity-0 translate-y-10 scale-95"
                      x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-                     x-transition:leave="transition ease-in duration-200 transform {{ $animOrigin }}"
+                     x-transition:leave="transition ease-in duration-200 transform origin-bottom-right"
                      x-transition:leave-start="opacity-100 translate-y-0 scale-100"
                      x-transition:leave-end="opacity-0 translate-y-10 scale-95"
                      x-cloak
-                     class="flex flex-col gap-3 mb-2 {{ $menuMarginClass }}"
+                     class="w-[340px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.3)] border border-gray-100 overflow-hidden"
                      @click.away="wppOpen = false"
                 >
-                    {{-- Close Button --}}
-                    <div class="flex {{ $closeBtnAlign }} mb-1">
-                        <button @click="wppOpen = false" class="bg-gray-400/80 text-white p-1.5 rounded-full hover:bg-gray-500 shadow-md backdrop-blur-sm transition-colors cursor-pointer relative z-50">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                        </button>
+                    {{-- Header Vermelho (Cor da Marca) --}}
+                    <div class="bg-gradient-to-r from-red-600 to-red-700 text-white p-5 pb-6 relative rounded-t-2xl">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-white/20 p-2 rounded-full">
+                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
+                                </div>
+                                <h3 class="font-bold text-[17px] leading-tight pr-4">{{ $chatTitle }}</h3>
+                            </div>
+                            <button @click="wppOpen = false" class="text-white/70 hover:text-white transition-colors pt-0.5">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            </button>
+                        </div>
+                        <p class="text-[13px] text-white/80 mt-2 ml-11">Normalmente respondemos em poucos minutos.</p>
+                        
+                        {{-- Forma do detalhe da onda --}}
+                        <div class="absolute -bottom-[1px] left-0 w-full overflow-hidden leading-none">
+                            <svg class="relative block w-[calc(100%+1.3px)] h-[18px]" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V0C101.44,48.26,203.11,85.22,321.39,56.44Z" class="fill-white"></path>
+                            </svg>
+                        </div>
                     </div>
-                    
-                    @foreach($contactDepts as $dept)
-                    <a href="https://wa.me/{{ preg_replace('/\D/', '', $dept['whatsapp'] ?? '') }}?text={{ urlencode('Olá! Gostaria de falar com o departamento: ' . ($dept['name'] ?? '')) }}"
-                       target="_blank"
-                       class="relative group flex items-center p-2.5 rounded-full shadow-lg transition-all hover:-translate-y-1"
-                       style="min-width: 270px; {{ $pillMargin }} background-color: {{ $waBgColor }}; color: {{ $waTextColor }}; {{ $waLayout === 'classic' ? 'border-radius: 8px; padding: 12px;' : ($isLeft ? 'padding-left: 20px;' : 'padding-right: 20px;') }}"
-                    >
-                        {{-- Avatar com borda saindo do botão (Modern Layout) --}}
-                        @if($waLayout === 'modern')
-                            <div class="absolute {{ $avatarPos }} w-14 h-14 bg-white rounded-full flex items-center justify-center p-0.5 shadow-md">
-                                <div class="relative w-full h-full rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
-                                    @if(!empty($dept['image']))
-                                        <img src="{{ asset('storage/' . $dept['image']) }}" alt="{{ $dept['name'] ?? '' }}" class="w-full h-full object-cover">
-                                    @else
-                                        <span class="font-bold text-xl" style="color: {{ $waBgColor }};">{{ substr($dept['name'] ?? 'W', 0, 1) }}</span>
+
+                    {{-- Lista de Atendentes (Fundo sutil claro) --}}
+                    <div class="px-5 py-4 bg-[#fbfbfb] max-h-[350px] overflow-y-auto wpp-scrollbar">
+                        <div class="space-y-3">
+                            @foreach($attendants as $att)
+                            <a href="https://wa.me/{{ preg_replace('/\D/', '', $att['whatsapp'] ?? '') }}?text={{ urlencode('Olá! Gostaria de falar com ' . ($att['name'] ?? '')) }}"
+                               target="_blank"
+                               class="flex items-center gap-3 bg-white p-3 rounded-xl border border-gray-100 hover:border-green-300 hover:shadow-md transition-all group"
+                            >
+                                {{-- Avatar com Indicador --}}
+                                <div class="relative shrink-0">
+                                    <div class="w-12 h-12 rounded-full overflow-hidden bg-gray-50 flex items-center justify-center border border-gray-100 group-hover:border-green-100 transition-colors">
+                                        @if(!empty($att['image']))
+                                            <img src="{{ asset('storage/' . $att['image']) }}" alt="{{ $att['name'] ?? '' }}" class="w-full h-full object-cover">
+                                        @else
+                                            <i class="fas fa-user text-gray-400 text-xl"></i>
+                                        @endif
+                                    </div>
+                                    <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
+                                </div>
+
+                                {{-- Detalhes --}}
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="font-bold text-gray-900 text-[14px] truncate">{{ $att['name'] ?? 'Atendente' }}</h4>
+                                    @if(!empty($att['role']))
+                                        <p class="text-[12px] text-gray-500 truncate">{{ $att['role'] }}</p>
                                     @endif
                                 </div>
-                                {{-- Online indicator --}}
-                                <span class="absolute bottom-1 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></span>
-                            </div>
-                        @else
-                            {{-- Classic Layout Avatar (Inside Button) --}}
-                            <div class="w-10 h-10 rounded-full flex items-center justify-center bg-white/20 {{ $isLeft ? 'order-last ml-3' : 'mr-3' }}">
-                                <i class="fab fa-whatsapp text-lg"></i>
-                            </div>
-                        @endif
 
-                        {{-- Text --}}
-                        <div class="flex-1 flex flex-col justify-center {{ $textDir }} {{ $waLayout === 'classic' ? '!ml-0' : '' }}">
-                            <span class="font-bold text-[15px] leading-tight">{{ $dept['name'] ?? 'Departamento' }}</span>
-                            @if(!empty($dept['description']))
-                                <span class="text-xs leading-tight mt-0.5 font-medium opacity-90">{{ $dept['description'] }}</span>
-                            @endif
+                                {{-- Ícone Call to Action --}}
+                                <div class="w-8 h-8 rounded-full bg-green-50 text-green-500 flex items-center justify-center group-hover:bg-green-500 group-hover:text-white transition-colors shrink-0">
+                                    <svg class="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
+                                </div>
+                            </a>
+                            @endforeach
                         </div>
-
-                        {{-- Icon (Paper Airplane) --}}
-                        <div class="border-white/20 {{ $isLeft ? 'border-r pr-3 mr-3 order-first' : 'border-l pl-3 ml-3' }}">
-                            <svg class="w-6 h-6 transform {{ $iconClass }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
-                        </div>
-                    </a>
-                    @endforeach
+                    </div>
+                    
+                    {{-- Rodapé Branding --}}
+                    <div class="px-5 py-3 border-t border-gray-100 bg-white text-center">
+                        <span class="text-[11px] font-medium text-gray-400">Atendimento rápido via WhatsApp</span>
+                    </div>
                 </div>
                 
-                {{-- Main Toggle Button --}}
+                {{-- Botão Flutuante (Fab Base) Vermelho Premium --}}
                 <button @click="wppOpen = !wppOpen"
-                        class="w-14 h-14 rounded-full flex items-center justify-center shadow-[0_4px_14px_0_rgba(0,0,0,0.39)] transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer relative"
-                        style="background-color: {{ $waBgColor }}; color: {{ $waTextColor }};"
+                        class="w-14 h-14 rounded-full flex items-center justify-center shadow-[0_4px_14px_0_rgba(220,38,38,0.4)] transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer relative bg-gradient-to-tr from-red-600 to-red-500 text-white z-50 hover:shadow-[0_6px_20px_rgba(220,38,38,0.6)]"
                 >
                     <div class="relative w-full h-full flex items-center justify-center">
                         <svg class="w-8 h-8 transition-all duration-300 absolute" :class="wppOpen ? 'opacity-0 scale-50 rotate-90' : 'opacity-100 scale-100 rotate-0'" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
-                        <svg class="w-7 h-7 transition-all duration-300 absolute" :class="wppOpen ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-50 -rotate-90'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                        <svg class="w-6 h-6 transition-all duration-300 absolute" :class="wppOpen ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-50 -rotate-90'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
                     </div>
                 </button>
                 
             @else
-                {{-- Fallback para Único Número (Padrão) --}}
+                {{-- Fallback para Único Número (Padrão) - Design mantido em vermelho --}}
                 <a href="https://wa.me/{{ preg_replace('/\D/', '', $globalWhatsapp) }}?text={{ urlencode($settings->get('whatsapp_message', 'Olá! Gostaria de mais informações.')) }}"
                    target="_blank"
-                   class="w-14 h-14 rounded-full flex items-center justify-center shadow-[0_4px_14px_0_rgba(0,0,0,0.39)] transition-colors hover:scale-110"
-                   style="background-color: {{ $waBgColor }}; color: {{ $waTextColor }};"
-                >
+                   class="w-14 h-14 rounded-full flex items-center justify-center shadow-[0_4px_14px_0_rgba(220,38,38,0.4)] hover:shadow-[0_6px_20px_rgba(220,38,38,0.6)] transition-all bg-gradient-to-tr from-red-600 to-red-500 text-white hover:scale-110 relative z-50">
                     <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
                 </a>
             @endif
             
+            <style>
+                .wpp-scrollbar::-webkit-scrollbar { width: 5px; }
+                .wpp-scrollbar::-webkit-scrollbar-track { background: transparent; }
+                .wpp-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
+                .wpp-scrollbar::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
+            </style>
         </div>
     @endif
 

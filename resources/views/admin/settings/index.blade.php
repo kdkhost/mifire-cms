@@ -127,49 +127,8 @@
                         </div>
                     </div>
 
-                    {{-- Configurações Visuais do WhatsApp --}}
-                    <div class="col-span-1 border-t border-gray-100 pt-5 mt-4">
-                        <h4 class="text-md font-bold text-gray-900 mb-4 flex items-center gap-2">
-                            <i class="fab fa-whatsapp text-green-500 text-lg"></i>
-                            Aparência do Widget de WhatsApp (Flutuante)
-                        </h4>
-                        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Layout do Botão</label>
-                                <select name="settings[whatsapp_layout]" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 bg-white shadow-sm">
-                                    <option value="modern" {{ old('settings.whatsapp_layout', $settings['whatsapp_layout'] ?? 'modern') === 'modern' ? 'selected' : '' }}>Moderno (Pílulas com Foto)</option>
-                                    <option value="classic" {{ old('settings.whatsapp_layout', $settings['whatsapp_layout'] ?? 'modern') === 'classic' ? 'selected' : '' }}>Clássico (Design Antigo)</option>
-                                    <option value="simple" {{ old('settings.whatsapp_layout', $settings['whatsapp_layout'] ?? 'modern') === 'simple' ? 'selected' : '' }}>Simples (Apenas Botão Direto)</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Posição na Tela</label>
-                                <select name="settings[whatsapp_position]" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 bg-white shadow-sm">
-                                    <option value="bottom-right" {{ old('settings.whatsapp_position', $settings['whatsapp_position'] ?? 'bottom-right') === 'bottom-right' ? 'selected' : '' }}>Canto Inferior Direito</option>
-                                    <option value="bottom-left" {{ old('settings.whatsapp_position', $settings['whatsapp_position'] ?? 'bottom-right') === 'bottom-left' ? 'selected' : '' }}>Canto Inferior Esquerdo</option>
-                                    <option value="center-right" {{ old('settings.whatsapp_position', $settings['whatsapp_position'] ?? 'bottom-right') === 'center-right' ? 'selected' : '' }}>Meio Direito</option>
-                                    <option value="center-left" {{ old('settings.whatsapp_position', $settings['whatsapp_position'] ?? 'bottom-right') === 'center-left' ? 'selected' : '' }}>Meio Esquerdo</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Cor de Fundo</label>
-                                <div class="flex items-center gap-2">
-                                    <input type="color" name="settings[whatsapp_bg_color]" value="{{ old('settings.whatsapp_bg_color', $settings['whatsapp_bg_color'] ?? '#25D366') }}" class="h-9 w-12 rounded cursor-pointer border border-gray-300 p-0.5 shadow-sm">
-                                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-gray-50 text-gray-500" value="{{ old('settings.whatsapp_bg_color', $settings['whatsapp_bg_color'] ?? '#25D366') }}" readonly>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Cor do Texto</label>
-                                <div class="flex items-center gap-2">
-                                    <input type="color" name="settings[whatsapp_text_color]" value="{{ old('settings.whatsapp_text_color', $settings['whatsapp_text_color'] ?? '#ffffff') }}" class="h-9 w-12 rounded cursor-pointer border border-gray-300 p-0.5 shadow-sm">
-                                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-gray-50 text-gray-500" value="{{ old('settings.whatsapp_text_color', $settings['whatsapp_text_color'] ?? '#ffffff') }}" readonly>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                        <h3 class="text-lg font-semibold text-gray-900 pb-3 border-b border-gray-100">Sobre a Empresa</h3>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Missão</label>
+                    {{-- SOBRE --}}
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4 mt-6">
                             <textarea name="settings[mission]" rows="3"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500">{{ old('settings.mission', $settings['mission'] ?? '') }}</textarea>
                         </div>
